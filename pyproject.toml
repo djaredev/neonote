@@ -1,0 +1,10 @@
+[project]
+name = "neonote"
+version = "0.1.0"
+description = "Web Application For Notes"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi[standard]>=0.115.0",
+    "sqlmodel>=0.0.22",
+]
