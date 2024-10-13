@@ -1,0 +1,25 @@
+from sqlmodel import SQLModel, Field
+
+
+class NoteBase(SQLModel):
+    title: str = Field(max_length=60)
+    content: str = Field(max_length=10000)
+
+
+class NoteCreate(NoteBase):
+    pass
+
+
+class NoteUpdate(SQLModel):
+    title: str | None = Field(max_length=60)
+    content: str | None = Field(max_length=10000)
+
+
+class Note(NoteBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int | None = Field(default=None, foreign_key="user.id")
+    archived: bool
+    created_at: str
+    updated_at: str
+    deleted_at: str
+    permanently_deleted_at: str
