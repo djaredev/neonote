@@ -8,25 +8,27 @@
 	let x: number, y: number, left: number, top: number;
 	let isClose = $state(true);
 	let editMode = $state(false);
-	let currentHeight: number, currentTop: number;
 	let resizeObserver: boolean = false;
 	let trans = $state(true);
+	let expanded = $state(false);
 
 	function open() {
 		console.log(note);
 		console.log(title);
 		const rect = note.getBoundingClientRect();
 
-		x = (window.innerWidth - rect.width * 2) / 2;
-		y = (window.innerHeight - rect.height * 2) / 2;
+		x = (window.innerWidth - rect.width * 2.5) / 2;
+		y = (window.innerHeight - rect.height) / 3;
 
 		left = rect.left;
 		top = rect.top;
 
 		note.style.transform = `translate(${x}px, ${y}px)`;
 		note.style.height = "auto";
-		note.style.width = rect.width * 2 + "px";
-		note.classList.add("expanded");
+		note.style.width = rect.width * 2.5 + "px";
+		resizeObserver = true;
+		// note.classList.add("expanded");
+		expanded = true;
 		editMode = true;
 		isClose = false;
 		trans = true;
@@ -35,34 +37,24 @@
 	function transitionend(event: TransitionEvent) {
 		if (event.propertyName !== "width") return;
 		console.log("transitionend");
-		currentHeight = note.offsetHeight - 2;
-		resizeObserver = true;
+		// resizeObserver = true;
 		trans = false;
 	}
 
 	function resizeNote(height: number) {
+		if (!resizeObserver) return;
 		console.log("Resize observer");
 		console.log(height);
-		console.log(currentHeight);
-		if (height !== currentHeight && resizeObserver) {
-			console.log("Inside");
-			if (height > currentHeight) {
-				y = y - 22 / 6;
-				note.style.transform = `translate(${x}px, ${y}px)`;
-				currentHeight = height;
-			} else if (height < currentHeight) {
-				y = y + 22 / 6;
-				note.style.transform = `translate(${x}px, ${y}px)`;
-				currentHeight = height;
-			}
-		}
+		y = (window.innerHeight - height) / 3;
+		note.style.transform = `translate(${x}px, ${y}px)`;
 	}
 
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
 		resizeObserver = false;
-		note.style.width = note.getBoundingClientRect().width / 2 + "px";
+		note.style.width = note.getBoundingClientRect().width / 2.5 + "px";
 		note.style.transform = `translate(${left}px, ${top}px)`;
+		expanded = false;
 		editMode = false;
 		isClose = true;
 	}
@@ -72,7 +64,7 @@
 
 <div class="layout">
 	<div
-		class="note"
+		class={["note", expanded && "expanded"]}
 		onclick={isClose ? open : null}
 		ontransitionend={trans ? transitionend : null}
 		bind:this={note}
@@ -113,6 +105,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 240px;
+		max-height: 590px;
 		color: white;
 		background: #11111b;
 		border: 1px solid #313244;
@@ -136,6 +129,7 @@
 		/* transition: all 0.3s ease; */
 		user-select: none;
 		font-size: 1rem;
+		max-height: 824px;
 
 		.note-title {
 			padding: 15px;
