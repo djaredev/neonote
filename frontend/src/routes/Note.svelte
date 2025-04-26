@@ -9,10 +9,12 @@
 	let isClose = $state(true);
 	let editMode = $state(false);
 	let resizeObserver: boolean = false;
-	let trans = $state(true);
+	let trans = $state(false);
 	let expanded = $state(false);
+	let { masonry, num } = $props();
 
 	function open() {
+		console.log("open " + num);
 		console.log(note);
 		console.log(title);
 		const rect = note.getBoundingClientRect();
@@ -27,23 +29,25 @@
 		note.style.height = "auto";
 		note.style.width = rect.width * 2.5 + "px";
 		resizeObserver = true;
-		// note.classList.add("expanded");
 		expanded = true;
 		editMode = true;
 		isClose = false;
-		trans = true;
+		// trans = true;
 	}
 
 	function transitionend(event: TransitionEvent) {
-		if (event.propertyName !== "width") return;
-		console.log("transitionend");
-		// resizeObserver = true;
+		console.log("transitionend " + num);
+		console.log(event);
+		expanded = false;
+		if (event.propertyName !== "font-size" && trans) return;
+		console.log("transitionend " + num);
+		masonry();
 		trans = false;
 	}
 
 	function resizeNote(height: number) {
 		if (!resizeObserver) return;
-		console.log("Resize observer");
+		console.log("Resize observer " + num);
 		console.log(height);
 		y = (window.innerHeight - height) / 3;
 		note.style.transform = `translate(${x}px, ${y}px)`;
@@ -51,54 +55,56 @@
 
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
+		console.log(event.target);
+		console.log("close " + num);
 		resizeObserver = false;
+		trans = true;
 		note.style.width = note.getBoundingClientRect().width / 2.5 + "px";
 		note.style.transform = `translate(${left}px, ${top}px)`;
-		expanded = false;
 		editMode = false;
 		isClose = true;
 	}
 </script>
 
-<svelte:document onclick={close} />
-
-<div class="layout">
-	<div
-		class={["note", expanded && "expanded"]}
-		onclick={isClose ? open : null}
-		ontransitionend={trans ? transitionend : null}
-		bind:this={note}
-		bind:clientHeight={null, resizeNote}
-	>
-		<div class="note-title" contenteditable={editMode} bind:this={title}>Este es el titulo</div>
-		<div class="note-body" contenteditable={editMode} bind:this={body}>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquam odit, in tempore
-			repudiandae ipsum perferendis alias quas quae dicta, obcaecati maiores iste vero harum error
-			et, facilis debitis? Eaque?
-		</div>
-		<div class="note-footer">
-			<div class="note-options">
-				<button>
-					<img src={archive} alt="" />
-				</button>
-				<button>
-					<img src={trash} alt="" />
-				</button>
-			</div>
+<svelte:document onclick={!isClose ? close : null} />
+<div
+	class={["note", expanded && "expanded"]}
+	onclick={isClose ? open : null}
+	ontransitionend={trans ? transitionend : null}
+	bind:this={note}
+	bind:clientHeight={null, resizeNote}
+	id="note-{num}"
+>
+	<div class="note-title" contenteditable={editMode} bind:this={title}>
+		Este es el titulo {num}
+	</div>
+	<div class="note-body" contenteditable={editMode} bind:this={body}>
+		Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquam odit, in tempore
+		repudiandae ipsum perferendis alias quas quae dicta, obcaecati maiores iste vero harum error et,
+		facilis debitis? Eaque?
+	</div>
+	<div class="note-footer">
+		<div class="note-options">
+			<button>
+				<img src={archive} alt="" />
+			</button>
+			<button>
+				<img src={trash} alt="" />
+			</button>
 		</div>
 	</div>
 </div>
 
 <style>
-	.layout {
-		position: relative;
-		width: 100%;
-		height: 100vh;
-		/* background: #11111b; */
-		border: none;
-		padding: 0;
-		margin: 0;
-	}
+	/* .layout { */
+	/* 	position: relative; */
+	/* 	width: 100%; */
+	/* 	height: 100vh; */
+	/* 	background: #11111b; */
+	/* 	border: none; */
+	/* 	padding: 0; */
+	/* 	margin: 0; */
+	/* } */
 
 	.note {
 		position: absolute;
@@ -143,7 +149,11 @@
 			/* font-size: 15px; */
 		}
 
-		~ .overlay {
+		/* ~ .overlay { */
+		/* 	opacity: 1; */
+		/* 	pointer-events: all; */
+		/* } */
+		:global(~ .overlay) {
 			opacity: 1;
 			pointer-events: all;
 		}
@@ -187,15 +197,17 @@
 		box-sizing: border-box;
 	}
 
-	.overlay {
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.5);
-		opacity: 0;
-		pointer-events: none;
-		transition: all 0.3s ease;
-	}
+	/* :global { */
+	/* 	~ .overlay { */
+	/* 		position: fixed; */
+	/* 		width: 100%; */
+	/* 		height: 100%; */
+	/* 		background-color: rgba(0, 0, 0, 0.5); */
+	/* 		opacity: 0; */
+	/* 		pointer-events: none; */
+	/* 		transition: all 0.3s ease; */
+	/* 	} */
+	/* } */
 
 	.note-options {
 		display: flex;
