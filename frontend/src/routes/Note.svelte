@@ -12,6 +12,8 @@
 	let trans = $state(false);
 	let expanded = $state(false);
 	let { masonry, num } = $props();
+	let height: number;
+	let width: number = $state(0);
 
 	function open() {
 		console.log("open " + num);
@@ -27,7 +29,7 @@
 
 		note.style.transform = `translate(${x}px, ${y}px)`;
 		note.style.height = "auto";
-		note.style.width = rect.width * 2.5 + "px";
+		// note.style.width = rect.width * 2.5 + "px";
 		resizeObserver = true;
 		expanded = true;
 		editMode = true;
@@ -38,14 +40,15 @@
 	function transitionend(event: TransitionEvent) {
 		console.log("transitionend " + num);
 		console.log(event);
-		expanded = false;
+		// expanded = false;
 		if (event.propertyName !== "font-size" && trans) return;
 		console.log("transitionend " + num);
 		masonry();
 		trans = false;
 	}
 
-	function resizeNote(height: number) {
+	function resizeNote(clientHeight: number) {
+		height = clientHeight;
 		if (!resizeObserver) return;
 		console.log("Resize observer " + num);
 		console.log(height);
@@ -59,19 +62,38 @@
 		console.log("close " + num);
 		resizeObserver = false;
 		trans = true;
-		note.style.width = note.getBoundingClientRect().width / 2.5 + "px";
+		// note.style.width = note.getBoundingClientRect().width / 2.5 + "px";
 		note.style.transform = `translate(${left}px, ${top}px)`;
 		editMode = false;
 		isClose = true;
+		expanded = false;
+	}
+
+	function resize() {
+		console.log("resizing...");
+		console.log(width);
+		if (!resizeObserver) return;
+		const rect = note.getBoundingClientRect();
+		x = (window.innerWidth - rect.width) / 2;
+		y = (window.innerHeight - rect.height) / 3;
+
+		note.style.transform = `translate(${x}px, ${y}px)`;
+		if (rect.height > window.innerHeight) {
+			note.style.height = "100vh";
+		} else if (rect.height + 25 < window.innerHeight) {
+			note.style.height = "auto";
+		}
 	}
 </script>
 
+<svelte:window onresize={resize} />
 <svelte:document onclick={!isClose ? close : null} />
 <div
 	class={["note", expanded && "expanded"]}
 	onclick={isClose ? open : null}
 	ontransitionend={trans ? transitionend : null}
 	bind:this={note}
+	bind:clientWidth={width}
 	bind:clientHeight={null, resizeNote}
 	id="note-{num}"
 >
@@ -111,6 +133,7 @@
 		display: flex;
 		flex-direction: column;
 		width: 240px;
+		/* min-width: 100px; */
 		max-height: 590px;
 		color: white;
 		background: #11111b;
@@ -135,6 +158,7 @@
 		/* transition: all 0.3s ease; */
 		user-select: none;
 		font-size: 1rem;
+		width: 600px;
 		max-height: 824px;
 
 		.note-title {
@@ -228,6 +252,12 @@
 				width: 24px;
 				height: 24px;
 			}
+		}
+	}
+
+	@media (width <= 600px) {
+		.expanded {
+			width: 100%;
 		}
 	}
 </style>
