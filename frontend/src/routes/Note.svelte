@@ -2,99 +2,82 @@
 	import archive from "$lib/icons/archive.svg";
 	import trash from "$lib/icons/trash.svg";
 
+	let { masonry, num } = $props();
+	let noteHeight: number;
+	let noteWidth: number = $state(0);
+	let innerWidth: number = $state(0);
+	let innerHeight: number = $state(0);
+	let isClose = $state(true);
+	let editMode = $state(false);
+	let transition = $state(false);
+	let expanded = $state(false);
 	let note: HTMLElement;
 	let title: HTMLElement;
 	let body: HTMLElement;
-	let x: number, y: number, left: number, top: number;
-	let isClose = $state(true);
-	let editMode = $state(false);
+	let x: number = $state(0);
+	let y: number = $state(0);
+	let left: number, top: number;
 	let resizeObserver: boolean = false;
-	let trans = $state(false);
-	let expanded = $state(false);
-	let { masonry, num } = $props();
-	let height: number;
-	let width: number = $state(0);
 
 	function open() {
-		console.log("open " + num);
-		console.log(note);
-		console.log(title);
 		const rect = note.getBoundingClientRect();
-
-		x = (window.innerWidth - rect.width * 2.5) / 2;
-		y = (window.innerHeight - rect.height) / 3;
-
 		left = rect.left;
 		top = rect.top;
-
-		note.style.transform = `translate(${x}px, ${y}px)`;
+		transition = true;
+		x = (innerWidth - rect.width * 2.5) / 2;
+		y = (innerHeight - rect.height) / 3;
+		console.log((innerHeight - noteHeight) / 3);
+		console.log(y);
 		note.style.height = "auto";
-		// note.style.width = rect.width * 2.5 + "px";
-		resizeObserver = true;
-		expanded = true;
-		editMode = true;
+		expanded = editMode = resizeObserver = true;
 		isClose = false;
-		// trans = true;
 	}
 
 	function transitionend(event: TransitionEvent) {
-		console.log("transitionend " + num);
-		console.log(event);
-		// expanded = false;
-		if (event.propertyName !== "font-size" && trans) return;
-		console.log("transitionend " + num);
-		masonry();
-		trans = false;
+		if (!isClose && event.propertyName === "width") {
+			transition = false;
+		} else if (isClose && event.propertyName !== "font-size") {
+			masonry();
+			transition = false;
+		}
 	}
 
 	function resizeNote(clientHeight: number) {
-		height = clientHeight;
+		noteHeight = clientHeight;
 		if (!resizeObserver) return;
-		console.log("Resize observer " + num);
-		console.log(height);
-		y = (window.innerHeight - height) / 3;
-		note.style.transform = `translate(${x}px, ${y}px)`;
+		y = (innerHeight - noteHeight) / 3;
 	}
 
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
-		console.log(event.target);
-		console.log("close " + num);
-		resizeObserver = false;
-		trans = true;
-		// note.style.width = note.getBoundingClientRect().width / 2.5 + "px";
-		note.style.transform = `translate(${left}px, ${top}px)`;
-		editMode = false;
+		expanded = editMode = resizeObserver = false;
 		isClose = true;
-		expanded = false;
+		x = left;
+		y = top;
 	}
 
 	function resize() {
-		console.log("resizing...");
-		console.log(width);
 		if (!resizeObserver) return;
-		const rect = note.getBoundingClientRect();
-		x = (window.innerWidth - rect.width) / 2;
-		y = (window.innerHeight - rect.height) / 3;
-
-		note.style.transform = `translate(${x}px, ${y}px)`;
-		if (rect.height > window.innerHeight) {
+		x = (innerWidth - noteWidth) / 2;
+		y = (innerHeight - noteHeight) / 3;
+		if (noteHeight > innerHeight) {
 			note.style.height = "100vh";
-		} else if (rect.height + 25 < window.innerHeight) {
+		} else if (noteHeight + 25 < innerHeight) {
 			note.style.height = "auto";
 		}
 	}
 </script>
 
-<svelte:window onresize={resize} />
-<svelte:document onclick={!isClose ? close : null} />
+<svelte:window bind:innerWidth bind:innerHeight onresize={resize} />
+<svelte:document onclick={!isClose && !transition ? close : null} />
 <div
 	class={["note", expanded && "expanded"]}
-	onclick={isClose ? open : null}
-	ontransitionend={trans ? transitionend : null}
+	onclick={isClose && !transition ? open : null}
+	ontransitionend={transition ? transitionend : null}
 	bind:this={note}
-	bind:clientWidth={width}
+	bind:clientWidth={noteWidth}
 	bind:clientHeight={null, resizeNote}
+	style:transform={`translate(${x}px, ${y}px)`}
 	id="note-{num}"
 >
 	<div class="note-title" contenteditable={editMode} bind:this={title}>
@@ -138,9 +121,9 @@
 		color: white;
 		background: #11111b;
 		border: 1px solid #313244;
-		border-radius: 5%;
+		border-radius: 10px;
 		overflow: hidden;
-		transition: all 0.14s ease;
+		transition: all 0.12s ease;
 		/* transform 5s ease, */
 		/* width 5s ease, */
 		/* height 5s ease; */
