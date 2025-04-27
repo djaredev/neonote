@@ -11,6 +11,7 @@
 	let editMode = $state(false);
 	let transition = $state(false);
 	let expanded = $state(false);
+	let zIndex = $state(false);
 	let note: HTMLElement;
 	let title: HTMLElement;
 	let body: HTMLElement;
@@ -23,22 +24,19 @@
 		const rect = note.getBoundingClientRect();
 		left = rect.left;
 		top = rect.top;
-		transition = true;
 		x = (innerWidth - rect.width * 2.5) / 2;
 		y = (innerHeight - rect.height) / 3;
-		console.log((innerHeight - noteHeight) / 3);
-		console.log(y);
 		note.style.height = "auto";
-		expanded = editMode = resizeObserver = true;
+		transition = zIndex = expanded = editMode = resizeObserver = true;
 		isClose = false;
 	}
 
 	function transitionend(event: TransitionEvent) {
 		if (!isClose && event.propertyName === "width") {
 			transition = false;
-		} else if (isClose && event.propertyName !== "font-size") {
+		} else if (isClose && event.propertyName === "font-size") {
+			zIndex = transition = false;
 			masonry();
-			transition = false;
 		}
 	}
 
@@ -51,7 +49,7 @@
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
 		expanded = editMode = resizeObserver = false;
-		isClose = true;
+		isClose = transition = true;
 		x = left;
 		y = top;
 	}
@@ -71,7 +69,7 @@
 <svelte:window bind:innerWidth bind:innerHeight onresize={resize} />
 <svelte:document onclick={!isClose && !transition ? close : null} />
 <div
-	class={["note", expanded && "expanded"]}
+	class={["note", expanded && "expanded", zIndex && "z-index"]}
 	onclick={isClose && !transition ? open : null}
 	ontransitionend={transition ? transitionend : null}
 	bind:this={note}
@@ -137,7 +135,7 @@
 	}
 
 	.expanded {
-		z-index: 1000;
+		/* z-index: 1000; */
 		/* transition: all 0.3s ease; */
 		user-select: none;
 		font-size: 1rem;
@@ -171,6 +169,10 @@
 		/*     height: 16px; */
 		/*   } */
 		/* } */
+	}
+
+	.z-index {
+		z-index: 1000;
 	}
 
 	.note-title {
