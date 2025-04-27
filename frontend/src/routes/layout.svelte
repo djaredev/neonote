@@ -9,9 +9,13 @@
 
 		const width = 240;
 
-		const columns = 5;
+		let columns = 5;
 
 		const heights = Array(columns).fill(0);
+
+		while (columns * width > window.innerWidth) {
+			columns--;
+		}
 
 		const gap = 10;
 		items.forEach((item, index) => {
@@ -26,6 +30,8 @@
 		masonry();
 	});
 </script>
+
+<svelte:window on:resize={masonry} />
 
 <div class="layout">
 	{@render notes(masonry)}
@@ -50,6 +56,6 @@
 		background-color: rgba(0, 0, 0, 0.5);
 		opacity: 0;
 		pointer-events: none;
-		transition: all 0.3s ease;
+		transition: all 0.05s ease;
 	}
 </style>
