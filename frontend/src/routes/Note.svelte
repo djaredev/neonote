@@ -19,15 +19,22 @@
 	let y: number = $state(0);
 	let left: number, top: number;
 	let resizeObserver: boolean = false;
+	let rect: DOMRect;
 
 	function open() {
-		const rect = note.getBoundingClientRect();
-		left = rect.left;
-		top = rect.top;
+		rect = note.getBoundingClientRect();
+		left = note.offsetLeft;
+		top = note.offsetTop;
+		transition = zIndex = expanded = editMode = resizeObserver = true;
+		// note.style.position = "fixed";
+		note.style.left = rect.left + "px";
+		note.style.top = rect.top + "px";
 		x = (innerWidth - rect.width * 2.5) / 2;
 		y = (innerHeight - rect.height) / 3;
+		x = x - rect.left;
+		y = y - rect.top;
+
 		note.style.height = "auto";
-		transition = zIndex = expanded = editMode = resizeObserver = true;
 		isClose = false;
 	}
 
@@ -43,21 +50,23 @@
 	function resizeNote(clientHeight: number) {
 		noteHeight = clientHeight;
 		if (!resizeObserver) return;
-		y = (innerHeight - noteHeight) / 3;
+		y = (innerHeight - noteHeight) / 3 - rect.top;
 	}
 
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
 		expanded = editMode = resizeObserver = false;
 		isClose = transition = true;
-		x = left;
-		y = top;
+		// note.style.position = "absolute";
+		note.style.left = left + "px";
+		note.style.top = top + "px";
+		x = y = 0;
 	}
 
 	function resize() {
 		if (!resizeObserver) return;
-		x = (innerWidth - noteWidth) / 2;
-		y = (innerHeight - noteHeight) / 3;
+		x = (innerWidth - noteWidth) / 2 - rect.left;
+		y = (innerHeight - noteHeight) / 3 - rect.top;
 		if (noteHeight > innerHeight) {
 			note.style.height = "100vh";
 		} else if (noteHeight + 25 < innerHeight) {
@@ -66,6 +75,7 @@
 	}
 </script>
 
+<!-- style:transform={`translate(${x - 60}px, ${y - 134}px)`} -->
 <svelte:window bind:innerWidth bind:innerHeight onresize={resize} />
 <svelte:document onclick={!isClose && !transition ? close : null} />
 <div
@@ -121,7 +131,12 @@
 		border: 1px solid #313244;
 		border-radius: 10px;
 		overflow: hidden;
-		transition: all 0.12s ease;
+		transition:
+			transform 0.12s ease,
+			height 0.12s ease,
+			width 0.12s ease,
+			padding 0.12s ease,
+			font-size 0.12s ease;
 		/* transform 5s ease, */
 		/* width 5s ease, */
 		/* height 5s ease; */
@@ -137,6 +152,7 @@
 	.expanded {
 		/* z-index: 1000; */
 		/* transition: all 0.3s ease; */
+		position: fixed;
 		user-select: none;
 		font-size: 1rem;
 		width: 600px;
