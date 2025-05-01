@@ -4,29 +4,22 @@
 	import trash from "$lib/icons/trash.svg";
 </script>
 
-<main class="container">
-	<nav class="sidebar">
-		<a href="#" class="active" title="Menu">
-			<img src={note} alt="Icono" width="24" height="24" />
-			<span>Notes</span>
-		</a>
-		<a href="#" title="Inicio">
-			<img src={archive} alt="Icono" width="24" height="24" />
-			<span>Archive</span>
-		</a>
-		<a href="#" title="Configuración">
-			<img src={trash} alt="Icono" width="24" height="24" />
-			<span>Trash</span>
-		</a>
-	</nav>
-</main>
+<nav class="sidebar">
+	<a href="#" class="active" title="Menu">
+		<img src={note} alt="Icono" width="24" height="24" />
+		<span>Notes</span>
+	</a>
+	<a href="#" title="Inicio">
+		<img src={archive} alt="Icono" width="24" height="24" />
+		<span>Archive</span>
+	</a>
+	<a href="#" title="Configuración">
+		<img src={trash} alt="Icono" width="24" height="24" />
+		<span>Trash</span>
+	</a>
+</nav>
 
 <style>
-	.container {
-		display: flex;
-		height: 100%;
-	}
-
 	.sidebar {
 		width: 60px;
 		background-color: #11111b;
@@ -36,7 +29,7 @@
 		align-items: flex-start;
 		transition: width 0.3s ease;
 		overflow: hidden;
-		position: fixed;
+		/* position: sticky; */
 		top: 0;
 		left: 0;
 		bottom: 0;
