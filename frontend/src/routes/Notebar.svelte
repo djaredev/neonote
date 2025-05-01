@@ -19,21 +19,17 @@
 
 <svelte:document onclick={close} />
 
-<div class="main-content">
-	<div class="bar-container pt-5 pb-5">
-		<div class={["note-bar", expand && "expand"]} style:height id="noteBar">
-			<input
-				type="text"
-				class="note-input"
-				placeholder={expand ? "Title" : "Take a note...."}
-				onclick={toExpand}
-				id="noteInput"
-			/>
-			<button type="button" class={["todo-btn mt-2 me-2", hidden && "hidden"]} id="addTodoList">
-			</button>
-			<textarea class="note-textarea" placeholder="Take a note..." id="noteTextarea"></textarea>
-		</div>
-	</div>
+<div class={["note-bar", expand && "expand"]} style:height id="noteBar">
+	<input
+		type="text"
+		class="note-input"
+		placeholder={expand ? "Title" : "Take a note...."}
+		onclick={toExpand}
+		id="noteInput"
+	/>
+	<button type="button" class={["todo-btn mt-2 me-2", hidden && "hidden"]} id="addTodoList">
+	</button>
+	<textarea class="note-textarea" placeholder="Take a note..." id="noteTextarea"></textarea>
 </div>
 
 <style>
@@ -49,6 +45,7 @@
 		transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 		overflow: hidden;
 		height: 54px;
+		align-self: center;
 	}
 
 	.note-bar.expand {
