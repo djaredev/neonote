@@ -3,9 +3,11 @@ name = "neonote"
 version = "0.1.0"
 description = "Web Application For Notes"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.115.0",
+    "passlib[bcrypt]>=1.7.4",
     "pydantic-settings>=2.5.2",
+    "pyjwt>=2.10.1",
     "sqlmodel>=0.0.22",
 ]
