@@ -27,3 +27,7 @@ class User(UserBase, table=True):
 class ChangePassword(SQLModel):
     old_password: str = Field(min_length=8, max_length=40)
     new_password: str = Field(min_length=8, max_length=40)
+
+
+class UserPublic(UserBase):
+    pass
