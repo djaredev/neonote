@@ -1,17 +1,141 @@
-<button class="btn signup-btn">Sign Up</button>
-<form class="login-form">
-	<h2>Login to Neonote</h2>
-	<br />
-	<div class="form-group">
-		<input type="text" id="username" name="username" placeholder=" " required />
-		<label for="username">Username</label>
-	</div>
-	<div class="form-group">
-		<input type="password" id="password" name="password" placeholder=" " required />
-		<label for="password">Password</label>
-	</div>
-	<button class="btn main-btn" type="submit">Login</button>
-</form>
+<script lang="ts">
+	const body = $state({
+		username: "",
+		password: ""
+	});
+</script>
+
+<div class="container">
+	<button class="btn signup-btn">Sign Up</button>
+	<form class="login-form">
+		<h2>Login to Neonote</h2>
+		<br />
+		<div class="form-group">
+			<input
+				type="text"
+				id="username"
+				name="username"
+				placeholder=" "
+				required
+				bind:value={body.username}
+			/>
+			<label for="username">Username</label>
+		</div>
+		<div class="form-group">
+			<input
+				type="password"
+				id="password"
+				name="password"
+				placeholder=" "
+				required
+				bind:value={body.password}
+			/>
+			<label for="password">Password</label>
+		</div>
+		<button class="btn main-btn" type="submit">Login</button>
+	</form>
+</div>
 
 <style>
+	.container {
+		font-family: Arial, sans-serif;
+		background-color: #11111b;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		position: relative;
+	}
+
+	.signup-btn {
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		background-color: transparent;
+		border: 1px solid #cdd6f4;
+		color: #cdd6f4;
+		text-decoration: none;
+		transition:
+			background-color 0.3s ease,
+			color 0.3s ease;
+	}
+
+	.signup-btn:hover {
+		background-color: #cdd6f4;
+		color: #11111b;
+	}
+
+	.login-form h2 {
+		text-align: center;
+		margin-bottom: 20px;
+		color: #cdd6f4;
+	}
+
+	.form-group {
+		position: relative;
+		margin-bottom: 25px;
+	}
+
+	.form-group input {
+		width: 300px;
+		height: 48px;
+		padding: 10px;
+		border: 1px solid #313244;
+		border-radius: 10px;
+		font-size: 16px;
+		background-color: transparent;
+		color: #cdd6f4;
+		outline: none;
+		transition: border-color 0.3s ease;
+	}
+
+	.form-group input::placeholder {
+		color: transparent;
+	}
+
+	.form-group label {
+		position: absolute;
+		top: 50%;
+		left: 10px;
+		transform: translateY(-50%);
+		background-color: transparent;
+		padding: 0 5px;
+		color: #cdd6f4;
+		font-size: 16px;
+		transition: all 0.3s ease;
+		pointer-events: none;
+	}
+
+	.form-group input:focus,
+	.form-group input:not(:placeholder-shown) {
+		border-color: #cdd6f4;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+	}
+
+	.form-group input:focus + label,
+	.form-group input:not(:placeholder-shown) + label {
+		top: -10px;
+		left: 10px;
+		font-size: 12px;
+		color: #cdd6f4;
+	}
+
+	.main-btn {
+		width: 100%;
+		background-color: #cdd6f4;
+		border: none;
+		color: #11111b;
+		cursor: pointer;
+		margin-top: 10px;
+	}
+
+	.main-btn:hover {
+		background-color: #bac2de;
+	}
+
+	.btn {
+		padding: 10px;
+		border-radius: 10px;
+		font-size: 16px;
+	}
 </style>
