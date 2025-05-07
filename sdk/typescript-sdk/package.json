@@ -1,0 +1,24 @@
+{
+  "name": "@neonote/sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "openapi-ts": "openapi-ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.8.0",
+  "devDependencies": {
+    "@hey-api/openapi-ts": "^0.67.1",
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@hey-api/client-fetch": "^0.10.0",
+    "zod": "^3.24.4"
+  }
+}
