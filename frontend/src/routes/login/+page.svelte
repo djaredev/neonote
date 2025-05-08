@@ -1,13 +1,26 @@
 <script lang="ts">
-	const body = $state({
+	import { goto } from "$app/navigation";
+	import { setUser } from "$lib/state/user.svelte";
+	import { login, type BodyLoginLoginPost } from "@neonote/sdk";
+	const body: BodyLoginLoginPost = $state({
 		username: "",
 		password: ""
 	});
+	async function onsubmit(event: SubmitEvent) {
+		event.preventDefault();
+		const res = await login({
+			body: body
+		});
+		if (res.data) {
+			setUser(res.data);
+			goto("/");
+		}
+	}
 </script>
 
 <div class="container">
 	<button class="btn signup-btn">Sign Up</button>
-	<form class="login-form">
+	<form {onsubmit} class="login-form">
 		<h2>Login to Neonote</h2>
 		<br />
 		<div class="form-group">
