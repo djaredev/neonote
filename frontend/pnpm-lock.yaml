@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@neonote/sdk':
+        specifier: link:../sdk/typescript-sdk
+        version: link:../sdk/typescript-sdk
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5

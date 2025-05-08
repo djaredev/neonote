@@ -36,5 +36,8 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"@neonote/sdk": "link:../sdk/typescript-sdk"
 	}
 }
