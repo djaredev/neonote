@@ -1,10 +1,10 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
-from app.api.deps import SessionDep, UserCookie
+from app.api.deps import UserCookie
 from app.core.security import create_access_token
-from app import service
-from app.models.user import UserPublic
+from app.models import UserPublic
+from app.service import UserService
 
 router = APIRouter(tags=["auth"])
 
@@ -12,10 +12,10 @@ router = APIRouter(tags=["auth"])
 @router.post("/login", response_model=UserPublic)
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    session: SessionDep,
     response: Response,
+    userService: UserService,
 ):
-    user = service.autentication(form_data.username, form_data.password, session)
+    user = userService.autentication(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
