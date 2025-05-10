@@ -1,3 +1,4 @@
+from datetime import datetime
 from sqlmodel import SQLModel, Field
 
 
@@ -18,8 +19,8 @@ class NoteUpdate(SQLModel):
 class Note(NoteBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     user_id: int | None = Field(default=None, foreign_key="user.id")
-    archived: bool
-    created_at: str
-    updated_at: str
-    deleted_at: str
-    permanently_deleted_at: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+    deleted_at: datetime | None = None
+    is_archived: bool = False
+    is_trashed: bool = False
