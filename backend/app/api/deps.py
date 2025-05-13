@@ -1,6 +1,6 @@
 from typing import Annotated, Generator
 from fastapi import Depends, HTTPException, status
-from fastapi.security import APIKeyCookie, OAuth2PasswordBearer
+from fastapi.security import APIKeyCookie
 from jwt import InvalidTokenError
 from sqlmodel import Session, select
 from app.core.db import engine
@@ -8,16 +8,20 @@ from app.core.security import decode_token
 from app.models.user import User
 import uuid
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 cookie_scheme = APIKeyCookie(name="neonote_token")
 
 
-def get_db() -> Generator[Session, None, None]:
+def _get_db() -> Generator[Session, None, None]:
     with Session(engine) as session:
         yield session
 
 
-def get_current_user(token: str, session: Session):
+SessionDep = Annotated[Session, Depends(_get_db)]
+
+
+def _get_current_user(
+    token: Annotated[str, Depends(cookie_scheme)], session: SessionDep
+):
     print("Current user: ")
     print("Token: ")
     print(token)
@@ -42,18 +46,4 @@ def get_current_user(token: str, session: Session):
     return user
 
 
-async def get_current_user_token(
-    token: Annotated[str, Depends(oauth2_scheme)], session: Session = Depends(get_db)
-) -> User:
-    return get_current_user(token, session)
-
-
-async def get_current_user_cookie(
-    token: Annotated[str, Depends(cookie_scheme)], session: Session = Depends(get_db)
-) -> User:
-    return get_current_user(token, session)
-
-
-SessionDep = Annotated[Session, Depends(get_db)]
-CurrentUser = Annotated[User, Depends(get_current_user_token)]
-UserCookie = Annotated[User, Depends(get_current_user_cookie)]
+CurrentUser = Annotated[User, Depends(_get_current_user)]

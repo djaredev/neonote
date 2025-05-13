@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
-from app.api.deps import UserCookie
+from app.api.deps import CurrentUser
 from app.core.security import create_access_token
 from app.models import UserPublic
 from app.service import UserService
@@ -32,5 +32,5 @@ async def login(
 
 
 @router.get("/whoami", response_model=UserPublic)
-async def whoami(user: UserCookie):
+async def whoami(user: CurrentUser):
     return user
