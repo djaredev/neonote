@@ -1,4 +1,5 @@
 from sqlmodel import SQLModel, Field
+from uuid import uuid4, UUID
 
 
 class UserBase(SQLModel):
@@ -20,7 +21,7 @@ class UserDelete(SQLModel):
 
 
 class User(UserBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
     hashed_password: str
 
 

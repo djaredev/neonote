@@ -6,6 +6,7 @@ from sqlmodel import Session, select
 from app.core.db import engine
 from app.core.security import decode_token
 from app.models.user import User
+import uuid
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 cookie_scheme = APIKeyCookie(name="neonote_token")
@@ -35,7 +36,7 @@ def get_current_user(token: str, session: Session):
     print(user_id)
     if not user_id:
         raise credentials_exception
-    user = session.exec(select(User).where(User.id == user_id)).first()
+    user = session.exec(select(User).where(User.id == uuid.UUID(user_id))).first()
     if user is None:
         raise credentials_exception
     return user
