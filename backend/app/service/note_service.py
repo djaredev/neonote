@@ -9,20 +9,21 @@ from datetime import datetime
 from typing import Annotated
 
 from fastapi import Depends
-from app.api.deps import SessionDep
 from app.models.note import Note, NoteCreate
 from app.models.user import User
+from app.api.deps import CurrentUser, SessionDep
 
 
 class _NoteService:
-    def __init__(self, session: SessionDep):
+    def __init__(self, user: CurrentUser, session: SessionDep):
         self.session = session
+        self.user = user
 
-    def create_note(self, user: User, note: NoteCreate):
+    def create_note(self, note: NoteCreate):
         db_note = Note.model_validate(
             note,
             update={
-                "user_id": user.id,
+                "user_id": self.user.id,
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
             },
