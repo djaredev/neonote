@@ -25,3 +25,16 @@ class Note(NoteBase, table=True):
     deleted_at: datetime | None = None
     is_archived: bool = False
     is_trashed: bool = False
+
+
+class NotePublic(NoteBase):
+    id: UUID
+    created_at: datetime
+    updated_at: datetime
+    deleted_at: datetime | None
+    is_archived: bool
+    is_trashed: bool
+
+
+class NotesPublic(SQLModel):
+    notes: list[NotePublic]
