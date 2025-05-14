@@ -1,5 +1,6 @@
 from datetime import datetime
 from sqlmodel import SQLModel, Field
+from uuid import uuid4, UUID
 
 
 class NoteBase(SQLModel):
@@ -17,8 +18,8 @@ class NoteUpdate(SQLModel):
 
 
 class Note(NoteBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    user_id: int | None = Field(default=None, foreign_key="user.id")
+    id: UUID = Field(default_factory=uuid4, primary_key=True)
+    user_id: UUID | None = Field(default=None, foreign_key="user.id")
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
     deleted_at: datetime | None = None
