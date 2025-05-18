@@ -7,66 +7,85 @@
 	let noteWidth: number = $state(0);
 	let innerWidth: number = $state(0);
 	let innerHeight: number = $state(0);
-	let isClose = $state(true);
-	let editMode = $state(false);
-	let transition = $state(false);
-	let expanded = $state(false);
-	let zIndex = $state(false);
-	let note: HTMLElement;
-	let title: HTMLElement;
-	let body: HTMLElement;
-	let x: number = $state(0);
-	let y: number = $state(0);
-	let left: number, top: number;
+	let left: string = $state("");
+	let top: string = $state("");
+	let position: string = $state("obsolute");
+	let isClose: boolean = $state(true);
+	let editMode: boolean = $state(false);
+	let transition: boolean = $state(false);
+	let expanded: boolean = $state(false);
+	let zIndex: boolean = $state(false);
+	let disableAnimation: boolean = $state(false);
 	let resizeObserver: boolean = false;
+	let note: HTMLElement;
 	let rect: DOMRect;
+	let noteClone: HTMLElement;
+	let overlay: HTMLElement = document.getElementById("overlay");
+	let test: string = $state("Este es un test del titulo");
+
+	function move(x: number, y: number) {
+		left = `${x}px`;
+		top = `${y}px`;
+	}
 
 	function open() {
+		disableAnimation = true;
+		noteClone = note.cloneNode(true) as HTMLElement;
+		noteClone.style.visibility = "hidden";
+		note.parentNode?.insertBefore(noteClone, note);
+		noteClone.classList.add("expanded");
+		const expandHeight = noteClone.offsetHeight;
+		noteClone.classList.remove("expanded");
 		rect = note.getBoundingClientRect();
-		left = note.offsetLeft;
-		top = note.offsetTop;
-		transition = zIndex = expanded = editMode = resizeObserver = true;
-		// note.style.position = "fixed";
-		note.style.left = rect.left + "px";
-		note.style.top = rect.top + "px";
-		x = (innerWidth - rect.width * 2.5) / 2;
-		y = (innerHeight - rect.height) / 3;
-		x = x - rect.left;
-		y = y - rect.top;
+		position = "fixed";
+		move(rect.left, rect.top);
 
-		note.style.height = "auto";
-		isClose = false;
+		setTimeout(() => {
+			isClose = disableAnimation = false;
+			transition = zIndex = expanded = editMode = true;
+			move((innerWidth - noteWidth * 2.5) / 2, (innerHeight - expandHeight) / 3);
+			overlay.classList.add("active");
+		}, 100);
 	}
 
 	function transitionend(event: TransitionEvent) {
 		if (!isClose && event.propertyName === "width") {
 			transition = false;
+			document.body.appendChild(note);
+			resizeObserver = true;
 		} else if (isClose && event.propertyName === "font-size") {
 			zIndex = transition = false;
+			disableAnimation = true;
+			position = "absolute";
+			move(noteClone.offsetLeft, noteClone.offsetTop);
+			noteClone.remove();
+			setTimeout(() => {
+				disableAnimation = false;
+			}, 0);
 			masonry();
 		}
 	}
 
-	function resizeNote(clientHeight: number) {
+	function resizeHeight(clientHeight: number) {
 		noteHeight = clientHeight;
 		if (!resizeObserver) return;
-		y = (innerHeight - noteHeight) / 3 - rect.top;
+		top = (innerHeight - noteHeight) / 3 + "px";
 	}
 
 	function close(event: MouseEvent) {
 		if (note.contains(event.target as Node)) return;
+		console.log(title);
 		expanded = editMode = resizeObserver = false;
 		isClose = transition = true;
-		// note.style.position = "absolute";
-		note.style.left = left + "px";
-		note.style.top = top + "px";
-		x = y = 0;
+		noteClone.parentNode?.insertBefore(note, noteClone);
+		rect = noteClone.getBoundingClientRect();
+		overlay.classList.remove("active");
+		move(rect.left, rect.top);
 	}
 
-	function resize() {
+	function onresize() {
 		if (!resizeObserver) return;
-		x = (innerWidth - noteWidth) / 2 - rect.left;
-		y = (innerHeight - noteHeight) / 3 - rect.top;
+		move((window.innerWidth - noteWidth) / 2, (window.innerHeight - noteHeight) / 3);
 		if (noteHeight > innerHeight) {
 			note.style.height = "100vh";
 		} else if (noteHeight + 25 < innerHeight) {
@@ -75,23 +94,22 @@
 	}
 </script>
 
-<!-- style:transform={`translate(${x - 60}px, ${y - 134}px)`} -->
-<svelte:window bind:innerWidth bind:innerHeight onresize={resize} />
+<svelte:window {onresize} bind:innerWidth bind:innerHeight />
 <svelte:document onclick={!isClose && !transition ? close : null} />
 <div
-	class={["note", expanded && "expanded", zIndex && "z-index"]}
+	class={["note", { expanded, zIndex, disableAnimation }]}
 	onclick={isClose && !transition ? open : null}
 	ontransitionend={transition ? transitionend : null}
 	bind:this={note}
 	bind:clientWidth={noteWidth}
-	bind:clientHeight={null, resizeNote}
-	style:transform={`translate(${x}px, ${y}px)`}
+	bind:clientHeight={null, resizeHeight}
+	style:position
+	style:top
+	style:left
 	id="note-{num}"
 >
-	<div class="note-title" contenteditable={editMode} bind:this={title}>
-		Este es el titulo {num}
-	</div>
-	<div class="note-body" contenteditable={editMode} bind:this={body}>
+	<div class="note-title" contenteditable={editMode}>Titulo de la nota</div>
+	<div class="note-body" contenteditable={editMode}>
 		Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquam odit, in tempore
 		repudiandae ipsum perferendis alias quas quae dicta, obcaecati maiores iste vero harum error et,
 		facilis debitis? Eaque?
@@ -131,12 +149,13 @@
 		border: 1px solid #313244;
 		border-radius: 10px;
 		overflow: hidden;
-		transition:
-			transform 0.12s ease,
-			height 0.12s ease,
-			width 0.12s ease,
-			padding 0.12s ease,
-			font-size 0.12s ease;
+		transition: all 0.12s ease;
+		/* transition: */
+		/* 	transform 0.12s ease, */
+		/* 	height 0.12s ease, */
+		/* 	width 0.12s ease, */
+		/* 	padding 0.12s ease, */
+		/* 	font-size 0.12s ease; */
 		/* transform 5s ease, */
 		/* width 5s ease, */
 		/* height 5s ease; */
@@ -149,14 +168,19 @@
 		}
 	}
 
+	.disableAnimation {
+		/* transition: all 0.12s ease; */
+		transition: none;
+	}
+
 	.expanded {
-		/* z-index: 1000; */
 		/* transition: all 0.3s ease; */
 		position: fixed;
 		user-select: none;
 		font-size: 1rem;
 		width: 600px;
 		max-height: 824px;
+		z-index: 1000;
 
 		.note-title {
 			padding: 15px;
@@ -174,10 +198,10 @@
 		/* 	opacity: 1; */
 		/* 	pointer-events: all; */
 		/* } */
-		:global(~ .overlay) {
-			opacity: 1;
-			pointer-events: all;
-		}
+		/* :global(~ .overlay) { */
+		/* 	opacity: 1; */
+		/* 	pointer-events: all; */
+		/* } */
 
 		/* .note-options { */
 		/*   & img { */
@@ -187,7 +211,7 @@
 		/* } */
 	}
 
-	.z-index {
+	.zIndex {
 		z-index: 1000;
 	}
 

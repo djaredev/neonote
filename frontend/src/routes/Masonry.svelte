@@ -5,7 +5,8 @@
 
 	function masonry() {
 		console.log("masonry updated");
-		const items: NodeListOf<HTMLElement> = document.querySelectorAll(".note");
+		const container = document.querySelector(".layout");
+		const items: NodeListOf<HTMLElement> = container.querySelectorAll(".note");
 
 		const width = 240;
 
@@ -25,7 +26,7 @@
 			// item.style.transform = `translate(${column * (width + gap)}px, ${heights[column]}px)`;
 			item.style.top = heights[column] + "px";
 			item.style.left = column * (width + gap) + "px";
-			item.style.height = item.offsetHeight + "px"; // It is used to set the height in the CSS (by default it is not set when it is auto) so that the transition can be made correctly
+			// item.style.height = item.offsetHeight + "px"; // It is used to set the height in the CSS (by default it is not set when it is auto) so that the transition can be made correctly
 			heights[column] += item.offsetHeight + gap;
 		});
 	}
@@ -40,7 +41,7 @@
 <!-- <div class="header"></div> -->
 <div class="layout">
 	{@render notes(masonry)}
-	<div class="overlay"></div>
+	<!-- <div class="overlay"></div> -->
 </div>
 
 <style>
@@ -63,13 +64,13 @@
 		align-self: center;
 	}
 
-	.overlay {
-		position: fixed;
-		width: 100%;
-		height: 100vh;
-		background-color: rgba(0, 0, 0, 0.5);
-		opacity: 0;
-		pointer-events: none;
-		transition: all 0.05s ease;
-	}
+	/* .overlay { */
+	/* 	position: fixed; */
+	/* 	width: 100%; */
+	/* 	height: 100vh; */
+	/* 	background-color: rgba(0, 0, 0, 0.5); */
+	/* 	opacity: 0; */
+	/* 	pointer-events: none; */
+	/* 	transition: all 0.05s ease; */
+	/* } */
 </style>
