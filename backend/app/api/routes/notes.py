@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from uuid import UUID
 from fastapi import APIRouter, HTTPException, status
 
 from app.models import NoteCreate
@@ -18,4 +18,14 @@ async def create_note(note: NoteCreate, service: NoteService):
 async def get_notes(service: NoteService):
     notes = service.get_notes()
     return NotesPublic(notes=notes)  # type: ignore
+
+
+@router.put("/{id}")
+async def update_note(note: NoteUpdate, service: NoteService, id: UUID):
+    updated_note = service.update_note(id, note)
+    if not updated_note:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
+    return updated_note
 

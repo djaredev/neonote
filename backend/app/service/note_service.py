@@ -9,10 +9,9 @@ from datetime import datetime
 from typing import Annotated
 
 from fastapi import Depends
-from app.models.note import Note, NoteCreate
-from app.models.user import User
 from sqlmodel import select
 from app.api.deps import CurrentUser, SessionDep
+from app.models.note import Note, NoteCreate, NoteUpdate
 
 
 class _NoteService:
@@ -41,4 +40,17 @@ class _NoteService:
             .order_by(Note.updated_at.desc())  # type: ignore
         )
 
+    def update_note(self, id, note: NoteUpdate):
+        db_note = self.session.get(Note, id)
+        if not db_note:
+            return None
+        if db_note.user_id != self.user.id:
+            return None
+        note_model = note.model_dump(exclude_unset=True)
+        note_model["updated_at"] = datetime.now()
+        db_note.sqlmodel_update(note_model)
+        self.session.add(db_note)
+        self.session.commit()
+        self.session.refresh(db_note)
+        return db_note
 NoteService = Annotated[_NoteService, Depends()]
