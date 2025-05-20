@@ -11,6 +11,7 @@ from typing import Annotated
 from fastapi import Depends
 from app.models.note import Note, NoteCreate
 from app.models.user import User
+from sqlmodel import select
 from app.api.deps import CurrentUser, SessionDep
 
 
@@ -33,5 +34,11 @@ class _NoteService:
         self.session.refresh(db_note)
         return db_note
 
+    def get_notes(self):
+        return self.session.exec(
+            select(Note)
+            .where(Note.user_id == self.user.id)
+            .order_by(Note.updated_at.desc())  # type: ignore
+        )
 
 NoteService = Annotated[_NoteService, Depends()]
