@@ -29,3 +29,12 @@ async def update_note(note: NoteUpdate, service: NoteService, id: UUID):
         )
     return updated_note
 
+
+@router.delete("/{id}", response_model=NotePublic)
+async def delete_note(service: NoteService, id: UUID):
+    deleted_note = service.delete_note(id)
+    if not deleted_note:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
+    return deleted_note

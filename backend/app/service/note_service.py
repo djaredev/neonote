@@ -53,4 +53,16 @@ class _NoteService:
         self.session.commit()
         self.session.refresh(db_note)
         return db_note
+
+    def delete_note(self, id):
+        db_note = self.session.get(Note, id)
+        if not db_note:
+            return None
+        if db_note.user_id != self.user.id:
+            return None
+        self.session.delete(db_note)
+        self.session.commit()
+        return db_note
+
+
 NoteService = Annotated[_NoteService, Depends()]
