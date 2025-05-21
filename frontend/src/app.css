@@ -7,6 +7,23 @@ body {
 	background: #11111b;
 	gap: 10px;
 }
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.7);
+	opacity: 0;
+	transition: all 0.05s ease;
+	visibility: hidden;
+	z-index: 100;
+}
+.overlay.active {
+	opacity: 1;
+	visibility: visible;
+}
 /* body { */
 /* 	position: relative; */
 /* 	width: 100%; */
