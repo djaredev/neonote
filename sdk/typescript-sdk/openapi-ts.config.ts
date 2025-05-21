@@ -8,19 +8,19 @@ export default defineConfig({
       name: "@hey-api/client-fetch",
       runtimeConfigPath: "./src/custom-client.ts",
     },
-    "zod",
+    // "zod",
     {
       name: "@hey-api/sdk",
       // @ts-ignore
       methodNameBuilder: (operation) => {
-        let name = operation.id;
-        if (name) {
-          name = name.replace(
-            new RegExp(operation.path.slice(1) + operation.method, "i"),
-            "",
-          );
+        console.log(operation);
+        let summary = operation.summary;
+        if (summary) {
+          summary = (summary.charAt(0).toLowerCase() + summary.slice(1))
+            .split(" ")
+            .join("");
         }
-        return name;
+        return summary;
       },
     },
     {
