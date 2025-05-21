@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-
-	let { notes } = $props();
+	import Note from "./Note.svelte";
+	import { notes } from "$lib/state/note.svelte";
 
 	function masonry() {
 		console.log("masonry updated");
@@ -34,14 +34,20 @@
 	onMount(() => {
 		masonry();
 	});
+
+	$effect(() => {
+		notes.notes.length;
+		masonry();
+	});
 </script>
 
 <svelte:window onresize={masonry} />
 
-<!-- <div class="header"></div> -->
 <div class="layout">
-	{@render notes(masonry)}
-	<!-- <div class="overlay"></div> -->
+	{#each notes.notes as note (note.id)}
+		<Note {masonry} num={note.id} title={note.title} content={note.content} />
+	{/each}
+	<div class="overlay"></div>
 </div>
 
 <style>

@@ -1,8 +1,10 @@
 <script lang="ts">
 	import archive from "$lib/icons/archive.svg";
 	import trash from "$lib/icons/trash.svg";
+	import { notes } from "$lib/state/note.svelte";
+	import { deleteNote, updateNote } from "@neonote/sdk";
 
-	let { masonry, num } = $props();
+	let { masonry, num, title, content } = $props();
 	let noteHeight: number;
 	let noteWidth: number = $state(0);
 	let innerWidth: number = $state(0);
@@ -21,7 +23,6 @@
 	let rect: DOMRect;
 	let noteClone: HTMLElement;
 	let overlay: HTMLElement = document.getElementById("overlay");
-	let test: string = $state("Este es un test del titulo");
 
 	function move(x: number, y: number) {
 		left = `${x}px`;
@@ -81,6 +82,7 @@
 		rect = noteClone.getBoundingClientRect();
 		overlay.classList.remove("active");
 		move(rect.left, rect.top);
+		save();
 	}
 
 	function onresize() {
@@ -90,6 +92,45 @@
 			note.style.height = "100vh";
 		} else if (noteHeight + 25 < innerHeight) {
 			note.style.height = "auto";
+		}
+	}
+
+	async function save() {
+		let note = notes.notes.find((note) => note.id == num);
+		if (note && (note.title !== title || note.content !== content)) {
+			const res = await updateNote({
+				body: {
+					title: title,
+					content: content
+				},
+				path: {
+					id: num
+				}
+			});
+			if (res.data) {
+				// setTimeout(() => {
+				// 	notes.notes = notes.notes.filter((note) => note.id !== num);
+				// 	setTimeout(() => {
+				// 		notes.notes.unshift(res.data);
+				// 	}, 200);
+				// 	console.log("Note updated!");
+				// }, 200);
+
+				console.log("Note updated!");
+			}
+		}
+	}
+
+	async function remove(event: MouseEvent) {
+		event.stopPropagation();
+		const res = await deleteNote({
+			path: {
+				id: num
+			}
+		});
+		if (res.data) {
+			console.log("Note deleted!");
+			notes.notes = notes.notes.filter((note) => note.id !== num);
 		}
 	}
 </script>
@@ -108,19 +149,20 @@
 	style:left
 	id="note-{num}"
 >
-	<div class="note-title" contenteditable={editMode}>Titulo de la nota</div>
-	<div class="note-body" contenteditable={editMode}>
-		Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus aliquam odit, in tempore
-		repudiandae ipsum perferendis alias quas quae dicta, obcaecati maiores iste vero harum error et,
-		facilis debitis? Eaque?
-	</div>
+	{#if editMode}
+		<div class="note-title" contenteditable="true" bind:textContent={title}></div>
+		<div class="note-body" contenteditable="true" bind:textContent={content}></div>
+	{:else}
+		<div class="note-title">{title}</div>
+		<div class="note-body">{content}</div>
+	{/if}
 	<div class="note-footer">
 		<div class="note-options">
 			<button>
 				<img src={archive} alt="" />
 			</button>
 			<button>
-				<img src={trash} alt="" />
+				<img onclick={remove} src={trash} alt="" />
 			</button>
 		</div>
 	</div>
