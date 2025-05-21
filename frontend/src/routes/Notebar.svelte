@@ -1,16 +1,35 @@
 <script lang="ts">
+	import { createNote } from "@neonote/sdk";
+	import { notes } from "$lib/state/note.svelte";
 	let hidden = $state(false);
 	let expand = $state(false);
 	let height = $state("");
+	// let title = $state("");
+	// let content = $state("");
+	const note = $state({
+		title: "",
+		content: ""
+	});
 
 	function toExpand() {
 		hidden = expand = true;
 		height = "250px";
 	}
 
-	function close(event: MouseEvent) {
+	async function close(event: MouseEvent) {
 		const noteBar = document.getElementById("noteBar");
 		if (!noteBar?.contains((event.target as Node) || null)) {
+			if (note.title && note.content) {
+				const res = await createNote({
+					body: note
+				});
+				if (res.data) {
+					console.log("Note created!");
+					notes.notes = [res.data, ...notes.notes];
+				}
+			}
+			note.title = "";
+			note.content = "";
 			hidden = expand = false;
 			height = "54px";
 		}
@@ -26,10 +45,16 @@
 		placeholder={expand ? "Title" : "Take a note...."}
 		onclick={toExpand}
 		id="noteInput"
+		bind:value={note.title}
 	/>
 	<button type="button" class={["todo-btn mt-2 me-2", hidden && "hidden"]} id="addTodoList">
 	</button>
-	<textarea class="note-textarea" placeholder="Take a note..." id="noteTextarea"></textarea>
+	<textarea
+		class="note-textarea"
+		placeholder="Take a note..."
+		id="noteTextarea"
+		bind:value={note.content}
+	></textarea>
 </div>
 
 <style>
