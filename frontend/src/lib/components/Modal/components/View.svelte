@@ -1,0 +1,31 @@
+<script lang="ts">
+	import { onMount } from "svelte";
+	import { getModalContext } from "./modal.svelte";
+
+	let { class: className = "", children } = $props();
+
+	const modalState = getModalContext();
+
+	onMount(() => {
+		console.log("View mounted");
+		console.log(modalState.view);
+	});
+</script>
+
+{#if modalState.isOpen}
+	<div
+		class={[className, modalState.disableAnimation && "disableAnimation"]}
+		bind:this={modalState.view}
+		bind:clientHeight={null, modalState.contentHeight}
+		ontransitionend={modalState.ontransitionend}
+		ontransitionstart={modalState.ontransitionstart}
+	>
+		{@render children()}
+	</div>
+{/if}
+
+<style>
+	.hidden {
+		visibility: hidden;
+	}
+</style>
