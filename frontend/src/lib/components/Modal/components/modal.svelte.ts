@@ -50,7 +50,7 @@ class ModalState {
 		});
 	};
 
-	onClose = (event: MouseEvent) => {
+	onClose = (event: MouseEvent, onClose) => {
 		if (
 			!this.preview ||
 			!this.view ||
@@ -66,6 +66,7 @@ class ModalState {
 		this.waitForTransitions().then(() => {
 			if (this.preview) this.preview.style.visibility = "visible";
 			this.isOpen = false;
+			onClose?.();
 		});
 	};
 
