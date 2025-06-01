@@ -1,0 +1,65 @@
+<script lang="ts">
+	import { onMount } from "svelte";
+	import Note from "$lib/ui/note/Note.svelte";
+	import { getNoteState } from "$lib/state/note.svelte";
+
+	const notes = getNoteState().getAll();
+
+	function masonry() {
+		const container = document.getElementById("layout");
+		if (!container) return;
+		const items: HTMLCollection = container.children;
+
+		const width = 240;
+
+		let columns = 7;
+
+		const heights = Array(columns).fill(0);
+
+		const gap = 10;
+
+		while (columns * width + gap * columns + 60 >= window.innerWidth) {
+			columns--;
+		}
+
+		for (let i = 0; i < items.length; i++) {
+			const column = i % columns;
+			const item = items[i] as HTMLElement;
+			item.style.top = heights[column] + "px";
+			item.style.left = column * (width + gap) + "px";
+			heights[column] += item.offsetHeight + gap;
+		}
+	}
+
+	onMount(() => {
+		masonry();
+	});
+
+	$effect(() => {
+		notes.length;
+		masonry();
+	});
+</script>
+
+<svelte:window onresize={masonry} />
+
+<div class="layout" id="layout">
+	{#each notes as note (note.id)}
+		<Note {masonry} id={note.id} />
+	{/each}
+</div>
+
+<style>
+	.layout {
+		position: relative;
+		flex: 1;
+		width: 99%;
+		height: 100vh;
+		background: inherit;
+		border: none;
+		padding: 0;
+		margin: 0;
+		overflow-y: visible;
+		align-self: center;
+	}
+</style>
