@@ -4,7 +4,6 @@ class ModalState {
 	isOpen: boolean = $state(false);
 	view = $state<HTMLElement | null>(null);
 	preview = $state<HTMLElement | null>(null);
-	disableAnimation = $state(false);
 	center = $state(false);
 	ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
 	ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
@@ -19,9 +18,9 @@ class ModalState {
 		if (!this.preview || !this.modal) return;
 		this.isOpen = this.overlay = true;
 		tick().then(() => {
-			this.disableAnimation = true;
 			tick().then(() => {
 				if (!this.view || !this.preview || !this.modal) return;
+				this.view.style.transition = "none";
 
 				const width = this.view.offsetWidth;
 				const height = this.view.offsetHeight;
@@ -29,10 +28,9 @@ class ModalState {
 
 				this.moveView(rect.left, rect.top);
 				this.resizeView(this.preview.offsetWidth, this.preview.offsetHeight);
-
 				this.view.offsetHeight; // force reflow
+				this.view.style.transition = "";
 
-				this.disableAnimation = false;
 				tick().then(() => {
 					if (!this.view || !this.preview) return;
 					const { left, top } = this.calcenter(width, height);
@@ -87,7 +85,7 @@ class ModalState {
 		}
 	};
 
-	resizeView = (width: number | string, height: number | string) => {
+	resizeView = (width: number, height: number | string) => {
 		if (!this.view) return;
 		this.view.style.width = `${width}px`;
 		this.view.style.height = typeof height === "number" ? `${height}px` : height;

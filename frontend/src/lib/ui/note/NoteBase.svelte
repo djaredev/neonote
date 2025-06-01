@@ -99,7 +99,7 @@
 		border: 1px solid #313244;
 		border-radius: 10px;
 		overflow: hidden;
-		transition: all 0.12s ease;
+		transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 		user-select: none;
 		font-size: 1rem;
 		box-sizing: border-box;

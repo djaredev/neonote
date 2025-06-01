@@ -14,7 +14,7 @@
 
 {#if modalState.isOpen}
 	<div
-		class={[className, modalState.disableAnimation && "disableAnimation"]}
+		class={className}
 		bind:this={modalState.view}
 		bind:clientHeight={null, modalState.contentHeight}
 		ontransitionend={modalState.ontransitionend}
