@@ -108,4 +108,16 @@ class _NoteService:
         self.session.refresh(db_note)
         return True
 
+    def trash_note(self, id: UUID) -> bool:
+        db_note = self.session.get(Note, id)
+        if not db_note:
+            return False
+        if db_note.user_id != self.user.id:
+            return False
+        db_note.is_trashed = True
+        self.session.add(db_note)
+        self.session.commit()
+        self.session.refresh(db_note)
+        return True
+
 NoteService = Annotated[_NoteService, Depends()]
