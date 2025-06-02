@@ -5,15 +5,15 @@
 </script>
 
 <nav class="sidebar">
-	<a href="#" class="active" title="Menu">
+	<a href="/" class="active" title="notes">
 		<img src={note} alt="Icono" width="24" height="24" />
 		<span>Notes</span>
 	</a>
-	<a href="#" title="Inicio">
+	<a href="/archive" title="archive">
 		<img src={archive} alt="Icono" width="24" height="24" />
 		<span>Archive</span>
 	</a>
-	<a href="#" title="Configuración">
+	<a href="/trash" title="trash">
 		<img src={trash} alt="Icono" width="24" height="24" />
 		<span>Trash</span>
 	</a>
