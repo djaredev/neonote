@@ -1,5 +1,13 @@
 import { getContext, setContext } from "svelte";
 import { archiveNote, trashNote, updateNote, type NotePublic } from "@neonote/sdk";
+import {
+	archiveNote,
+	restoreNote,
+	trashNote,
+	unarchiveNote,
+	updateNote,
+	type NotePublic
+} from "@neonote/sdk";
 
 class NoteState {
 	private notes: NotePublic[] = $state([]);
@@ -35,6 +43,17 @@ class NoteState {
 
 	archive = async (id: string) => {
 		const res = await archiveNote({
+			path: {
+				id
+			}
+		});
+		if (res.response.status === 204) {
+			this.notes = this.notes.filter((n) => n.id !== id);
+		}
+	};
+
+	unArchive = async (id: string) => {
+		const res = await unarchiveNote({
 			path: {
 				id
 			}
