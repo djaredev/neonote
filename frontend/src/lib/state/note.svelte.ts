@@ -1,8 +1,7 @@
 import { getContext, setContext } from "svelte";
-import { updateNote, type NotePublic } from "@neonote/sdk";
+import { archiveNote, trashNote, updateNote, type NotePublic } from "@neonote/sdk";
 
 class NoteState {
-	// private notes: NotePublic[] | null = $state(null);
 	private notes: NotePublic[] = $state([]);
 	constructor(notes: NotePublic[]) {
 		this.notes = notes;
@@ -11,7 +10,7 @@ class NoteState {
 	create = () => {};
 
 	findById = (id: string): NotePublic | undefined => {
-		return this.notes?.find((n) => n.id === id);
+		return this.notes.find((n) => n.id === id);
 	};
 
 	getAll = () => {
@@ -34,7 +33,17 @@ class NoteState {
 		}
 	};
 
-	remove = () => {};
+	archive = async (id: string) => {
+		const res = await archiveNote({
+			path: {
+				id
+			}
+		});
+		if (res.response.status === 204) {
+			this.notes = this.notes.filter((n) => n.id !== id);
+		}
+	};
+
 }
 
 const KEY = "id_noteState";
