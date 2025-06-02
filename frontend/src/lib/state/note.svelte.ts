@@ -1,5 +1,4 @@
 import { getContext, setContext } from "svelte";
-import { archiveNote, trashNote, updateNote, type NotePublic } from "@neonote/sdk";
 import {
 	archiveNote,
 	restoreNote,
@@ -65,6 +64,17 @@ class NoteState {
 
 	trash = async (id: string) => {
 		const res = await trashNote({
+			path: {
+				id
+			}
+		});
+		if (res.response.status === 204) {
+			this.notes = this.notes.filter((n) => n.id !== id);
+		}
+	};
+
+	restore = async (id: string) => {
+		const res = await restoreNote({
 			path: {
 				id
 			}
