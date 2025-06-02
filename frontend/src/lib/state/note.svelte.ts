@@ -44,6 +44,16 @@ class NoteState {
 		}
 	};
 
+	trash = async (id: string) => {
+		const res = await trashNote({
+			path: {
+				id
+			}
+		});
+		if (res.response.status === 204) {
+			this.notes = this.notes.filter((n) => n.id !== id);
+		}
+	};
 }
 
 const KEY = "id_noteState";
