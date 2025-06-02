@@ -42,6 +42,14 @@ class _NoteService:
             .order_by(Note.created_at.desc())  # type: ignore
         )
 
+    def get_archived_notes(self):
+        return self.session.exec(
+            select(Note)
+            .where(Note.user_id == self.user.id)
+            .where(Note.is_archived == True)
+            .where(Note.is_trashed == False)
+            .order_by(Note.created_at.desc())  # type: ignore
+        )
     def update_note(self, id, note: NoteUpdate):
         db_note = self.session.get(Note, id)
         if not db_note:
