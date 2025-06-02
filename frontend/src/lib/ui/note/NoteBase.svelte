@@ -4,7 +4,7 @@
 	import TextEditor from "$lib/components/Editor/TextEditor.svelte";
 	import { getNoteState } from "$lib/state/note.svelte";
 
-	let { id, options, onClose = null } = $props();
+	let { id, options, onClose = null, view = null } = $props();
 
 	let note = getNoteState().findById(id);
 
@@ -27,8 +27,16 @@
 		</Modal.Preview>
 		<Modal.Overlay class="overlay-view" {transition} />
 		<Modal.View class="view">
-			<TextEditor class="note-title-expand" bind:value={note.title} placeholder="Title" />
-			<TextEditor class="note-body-expand" bind:value={note.content} placeholder="Take a note..." />
+			{#if view}
+				{@render view(note)}
+			{:else}
+				<TextEditor class="note-title-expand" bind:value={note.title} placeholder="Title" />
+				<TextEditor
+					class="note-body-expand"
+					bind:value={note.content}
+					placeholder="Take a note..."
+				/>
+			{/if}
 			<div class="note-footer">
 				<div class="note-options">
 					{@render options()}
