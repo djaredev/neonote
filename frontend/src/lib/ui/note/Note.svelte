@@ -18,11 +18,11 @@
 	}
 
 	function archive() {
-		console.log("Archive");
+		noteState.archive(id);
 	}
 
 	function trash() {
-		console.log("Trash");
+		noteState.trash(id);
 	}
 </script>
 
