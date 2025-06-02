@@ -7,6 +7,7 @@
 
 from datetime import datetime
 from typing import Annotated
+from uuid import UUID
 
 from fastapi import Depends
 from sqlmodel import select
@@ -50,6 +51,7 @@ class _NoteService:
             .where(Note.is_trashed == False)
             .order_by(Note.created_at.desc())  # type: ignore
         )
+
     def get_trashed_notes(self):
         return self.session.exec(
             select(Note)
@@ -57,6 +59,7 @@ class _NoteService:
             .where(Note.is_trashed == True)
             .order_by(Note.created_at.desc())  # type: ignore
         )
+
     def update_note(self, id, note: NoteUpdate):
         db_note = self.session.get(Note, id)
         if not db_note:
@@ -81,5 +84,16 @@ class _NoteService:
         self.session.commit()
         return db_note
 
+    def archive_note(self, id: UUID) -> bool:
+        db_note = self.session.get(Note, id)
+        if not db_note:
+            return False
+        if db_note.user_id != self.user.id:
+            return False
+        db_note.is_archived = True
+        self.session.add(db_note)
+        self.session.commit()
+        self.session.refresh(db_note)
+        return True
 
 NoteService = Annotated[_NoteService, Depends()]
