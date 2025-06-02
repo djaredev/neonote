@@ -20,7 +20,6 @@ async def get_notes(service: NoteService):
     return NotesPublic(notes=notes)  # type: ignore
 
 
-@router.put("/{id}")
 @router.get("/archived", response_model=NotesPublic)
 async def get_archived_notes(service: NoteService):
     archived_notes = service.get_archived_notes()
@@ -69,3 +68,17 @@ async def unarchive_note(service: NoteService, id: UUID):
         )
 
 
+@router.post("/{id}/trash", status_code=status.HTTP_204_NO_CONTENT)
+async def trash_note(service: NoteService, id: UUID):
+    if not service.trash_note(id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
+
+
+@router.post("/{id}/restore", status_code=status.HTTP_204_NO_CONTENT)
+async def restore_note(service: NoteService, id: UUID):
+    if not service.restore_note(id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+        )
