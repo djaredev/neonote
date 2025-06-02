@@ -17,11 +17,13 @@
 		masonry();
 	}
 
-	function archive() {
+	function archive(event: MouseEvent) {
+		event.stopPropagation();
 		noteState.archive(id);
 	}
 
-	function trash() {
+	function trash(event: MouseEvent) {
+		event.stopPropagation();
 		noteState.trash(id);
 	}
 </script>
