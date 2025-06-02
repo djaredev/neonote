@@ -37,7 +37,9 @@ class _NoteService:
         return self.session.exec(
             select(Note)
             .where(Note.user_id == self.user.id)
-            .order_by(Note.updated_at.desc())  # type: ignore
+            .where(Note.is_archived == False)
+            .where(Note.is_trashed == False)
+            .order_by(Note.created_at.desc())  # type: ignore
         )
 
     def update_note(self, id, note: NoteUpdate):
