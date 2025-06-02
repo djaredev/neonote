@@ -27,6 +27,13 @@ async def get_archived_notes(service: NoteService):
     return NotesPublic(notes=archived_notes)  # type: ignore
 
 
+@router.get("/trashed", response_model=NotesPublic)
+async def get_trashed_notes(service: NoteService):
+    trashed_notes = service.get_trashed_notes()
+    return NotesPublic(notes=trashed_notes)  # type: ignore
+
+
+@router.put("/{id}", response_model=NotePublic)
 async def update_note(note: NoteUpdate, service: NoteService, id: UUID):
     updated_note = service.update_note(id, note)
     if not updated_note:
