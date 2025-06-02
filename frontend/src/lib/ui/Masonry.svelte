@@ -3,9 +3,11 @@
 	import Note from "$lib/ui/note/Note.svelte";
 	import { getNoteState } from "$lib/state/note.svelte";
 
-	const notes = getNoteState().getAll();
+	let { children } = $props();
 
-	function masonry() {
+	const notes = $derived(getNoteState().getAll());
+
+	export function masonry() {
 		const container = document.getElementById("layout");
 		if (!container) return;
 		const items: HTMLCollection = container.children;
@@ -37,6 +39,7 @@
 
 	$effect(() => {
 		notes.length;
+		console.log("Masonry effect");
 		masonry();
 	});
 </script>
@@ -44,9 +47,7 @@
 <svelte:window onresize={masonry} />
 
 <div class="layout" id="layout">
-	{#each notes as note (note.id)}
-		<Note {masonry} id={note.id} />
-	{/each}
+	{@render children()}
 </div>
 
 <style>
