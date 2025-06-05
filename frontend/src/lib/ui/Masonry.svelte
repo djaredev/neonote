@@ -4,6 +4,8 @@
 	import { getNoteState } from "$lib/state/note.svelte";
 
 	let { children } = $props();
+	let ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
+	let ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
 
 	const notes = $derived(getNoteState().getAll());
 
@@ -42,11 +44,32 @@
 		console.log("Masonry effect");
 		masonry();
 	});
+
+	export function waitForTransitions(): Promise<void> {
+		return new Promise((resolve) => {
+			let activeTransitions = 0;
+
+			ontransitionstart = (event: TransitionEvent) => {
+				if (!event.target.classList.contains("note")) return;
+				activeTransitions++;
+			};
+
+			ontransitionend = (event: TransitionEvent) => {
+				if (!event.target.classList.contains("note")) return;
+				activeTransitions--;
+				if (activeTransitions === 0) {
+					ontransitionstart = null;
+					ontransitionend = null;
+					resolve();
+				}
+			};
+		});
+	}
 </script>
 
 <svelte:window onresize={masonry} />
 
-<div class="layout" id="layout">
+<div class="layout" id="layout" {ontransitionstart} {ontransitionend}>
 	{@render children()}
 </div>
 
