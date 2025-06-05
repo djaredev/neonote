@@ -9,7 +9,7 @@
 
 <div class="container">
 	<Sidebar />
-	<div class="content">
+	<div class="content" id="content">
 		{@render children()}
 	</div>
 </div>

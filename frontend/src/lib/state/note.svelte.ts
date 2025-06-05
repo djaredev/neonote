@@ -9,7 +9,7 @@ import {
 } from "@neonote/sdk";
 
 class NoteState {
-	private notes: NotePublic[] = $state([]);
+	notes: NotePublic[] = $state([]);
 	constructor(notes: NotePublic[]) {
 		this.notes = notes;
 	}
