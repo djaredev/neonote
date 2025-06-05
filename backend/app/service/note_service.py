@@ -34,13 +34,15 @@ class _NoteService:
         self.session.refresh(db_note)
         return db_note
 
-    def get_notes(self):
+    def get_notes(self, limit: int, offset: int):
         return self.session.exec(
             select(Note)
             .where(Note.user_id == self.user.id)
             .where(Note.is_archived == False)
             .where(Note.is_trashed == False)
             .order_by(Note.created_at.desc())  # type: ignore
+            .limit(limit)
+            .offset(offset)
         )
 
     def get_archived_notes(self):

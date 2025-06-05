@@ -15,8 +15,12 @@ async def create_note(note: NoteCreate, service: NoteService):
 
 
 @router.get("", response_model=NotesPublic)
-async def get_notes(service: NoteService):
-    notes = service.get_notes()
+async def get_notes(
+    service: NoteService,
+    limit: int = 10,
+    offset: int = 0,
+):
+    notes = service.get_notes(limit, offset)
     return NotesPublic(notes=notes)  # type: ignore
 
 
