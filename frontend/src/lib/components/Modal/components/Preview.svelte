@@ -5,15 +5,6 @@
 
 	const modal = getModalContext();
 
-	onMount(() => {
-		console.log("Preview mounted");
-		console.log("From Preview: ");
-
-		// tick().then(() => {
-		// 	console.log(modal.modal);
-		// });
-	});
-
 	function onclick() {
 		console.log(modal.modal.localName);
 	}

@@ -5,11 +5,6 @@
 	let { class: className = "", children } = $props();
 
 	const modalState = getModalContext();
-
-	onMount(() => {
-		console.log("View mounted");
-		console.log(modalState.view);
-	});
 </script>
 
 {#if modalState.isOpen}

@@ -7,10 +7,6 @@
 	setModalContext(customCenter);
 
 	const modalState = getModalContext();
-
-	onMount(() => {
-		console.log("Modal mounted");
-	});
 </script>
 
 <svelte:window onresize={modalState.onresize} />
