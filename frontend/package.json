@@ -38,6 +38,7 @@
 		]
 	},
 	"dependencies": {
+		"@lucide/svelte": "^0.513.0",
 		"@neonote/sdk": "link:../sdk/typescript-sdk"
 	}
 }
