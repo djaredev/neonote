@@ -24,7 +24,7 @@
 			}
 		});
 		if (data.data && data.data.notes.length > 0) {
-			if (noteState.notes.length + data.data.notes.length >= 30) {
+			if (noteState.notes.length + data.data.notes.length >= 100) {
 				noteState.notes.splice(0, 10);
 				layout.waitForTransitions().then(() => {
 					noteState.notes.push(...data.data.notes);
@@ -54,15 +54,15 @@
 		});
 		if (data.data && data.data.notes.length > 0) {
 			noteState.notes.unshift(...data.data.notes);
-			count -= 10;
 			layout.waitForTransitions().then(() => {
 				const newScrollHeight = content.scrollHeight;
 				const deltaHeight = newScrollHeight - previousScrollHeight;
 				content.scrollTop = previousScrollTop + deltaHeight;
-				if (noteState.notes.length >= 30) {
+				if (noteState.notes.length >= 100) {
 					noteState.notes.splice(noteState.notes.length - 10, 10);
 					length -= 10;
 				}
+				count -= data.data.notes.length;
 			});
 		}
 		isLoadingTop = false;
