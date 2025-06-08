@@ -12,6 +12,7 @@
 	export function masonry() {
 		const container = document.getElementById("layout");
 		if (!container) return;
+		console.log(container.offsetWidth);
 		const items: HTMLCollection = container.children;
 
 		const width = 240;
@@ -22,7 +23,7 @@
 
 		const gap = 10;
 
-		while (columns * width + gap * columns + 60 >= window.innerWidth) {
+		while (columns * width + gap * columns >= container.offsetWidth) {
 			columns--;
 		}
 
@@ -65,25 +66,35 @@
 			};
 		});
 	}
+
+	function onResizeWidth() {
+		masonry();
+	}
 </script>
 
 <svelte:window onresize={masonry} />
 
-<div class="layout" id="layout" {ontransitionstart} {ontransitionend}>
+<div
+	class="layout"
+	id="layout"
+	{ontransitionstart}
+	{ontransitionend}
+	bind:clientWidth={null, onResizeWidth}
+>
 	{@render children()}
 </div>
 
 <style>
 	.layout {
 		position: relative;
+		max-width: 1752px;
 		flex: 1;
-		width: 99%;
-		height: 100vh;
-		background: inherit;
-		border: none;
-		padding: 0;
-		margin: 0;
-		overflow-y: visible;
-		align-self: center;
+		overflow-y: auto;
+	}
+
+	@container content (width < 1700px) {
+		.layout {
+			max-width: 1502px;
+		}
 	}
 </style>

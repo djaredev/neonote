@@ -3,31 +3,33 @@
 	import Header from "$lib/ui/Header.svelte";
 
 	let { children } = $props();
+
+	let isOpen = $state(false);
 </script>
 
-<Header />
-
-<div class="container">
-	<Sidebar />
-	<div class="content" id="content">
+<Sidebar bind:isOpen />
+<div class="main">
+	<Header bind:isOpen />
+	<div class="content">
 		{@render children()}
 	</div>
 </div>
 
 <style>
-	.container {
+	.content {
 		display: flex;
+		width: 100%;
 		flex: 1;
 		overflow-y: auto;
-		/* overflow: hidden; */
+		gap: 10px;
+		justify-content: center;
+		container: content / inline-size;
 	}
 
-	.content {
+	.main {
 		display: flex;
 		flex-direction: column;
 		flex: 1;
-		overflow-y: auto;
-		padding-left: 60px;
 		gap: 10px;
 	}
 </style>
