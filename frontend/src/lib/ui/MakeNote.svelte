@@ -1,9 +1,8 @@
 <script lang="ts">
-	import archive from "$lib/icons/archive.svg";
-	import trash from "$lib/icons/trash.svg";
 	import { fade } from "svelte/transition";
 	import { Modal } from "$lib/components/Modal";
 	import TextEditor from "$lib/components/Editor/TextEditor.svelte";
+	import { ArchiveIcon, Trash2Icon } from "@lucide/svelte";
 
 	let title = $state("");
 	let content = $state("");
@@ -32,10 +31,10 @@
 		<div class="note-footer">
 			<div class="note-options">
 				<button>
-					<img src={archive} alt="" />
+					<ArchiveIcon color="#cdd6f4" />
 				</button>
 				<button>
-					<img src={trash} alt="" />
+					<Trash2Icon color="#cdd6f4" />
 				</button>
 			</div>
 		</div>

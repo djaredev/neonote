@@ -1,8 +1,8 @@
 <script lang="ts">
 	import NoteBase from "./NoteBase.svelte";
-	import trashSVG from "$lib/icons/trash.svg";
 	import { getNoteState } from "$lib/state/note.svelte";
 	import { type NotePublic } from "@neonote/sdk";
+	import { FileUpIcon } from "@lucide/svelte";
 	let { masonry, id } = $props();
 
 	const noteState = getNoteState();
@@ -25,7 +25,7 @@
 	{/snippet}
 	{#snippet options()}
 		<button onclick={restore}>
-			<img src={trashSVG} alt="" />
+			<FileUpIcon color="#cdd6f4" />
 		</button>
 	{/snippet}
 </NoteBase>

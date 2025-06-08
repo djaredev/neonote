@@ -1,8 +1,7 @@
 <script lang="ts">
 	import NoteBase from "./NoteBase.svelte";
-	import archiveSVG from "$lib/icons/archive.svg";
-	import trashSVG from "$lib/icons/trash.svg";
 	import { getNoteState } from "$lib/state/note.svelte";
+	import { ArchiveIcon, Trash2Icon } from "@lucide/svelte";
 	let { masonry, id } = $props();
 
 	const noteState = getNoteState();
@@ -31,10 +30,10 @@
 <NoteBase {id} {onClose}>
 	{#snippet options()}
 		<button onclick={archive}>
-			<img src={archiveSVG} alt="" />
+			<ArchiveIcon color="#cdd6f4" />
 		</button>
 		<button onclick={trash}>
-			<img src={trashSVG} alt="" />
+			<Trash2Icon color="#cdd6f4" />
 		</button>
 	{/snippet}
 </NoteBase>
