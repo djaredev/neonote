@@ -18,7 +18,7 @@
 				<WallpaperIcon color="#cdd6f4" />
 				<span class="option-label">Apparance</span>
 			</a>
-			<a href="" class="settings-option" title="security">
+			<a href="/settings/security" class="settings-option" title="security">
 				<Fingerprint color="#cdd6f4" />
 				<span class="option-label">Security</span>
 			</a>
@@ -109,34 +109,6 @@
 				flex: 1;
 				background: inherit;
 				padding: 10px;
-
-				.profile {
-					display: flex;
-					flex-direction: column;
-					gap: 10px;
-					border: 1px solid #313244;
-					border-radius: 8px;
-					justify-content: center;
-					align-items: center;
-					padding: 20px;
-
-					.form {
-						display: flex;
-						width: 100%;
-						flex-direction: column;
-						gap: 10px;
-
-						.label {
-							color: #a6adc8;
-							text-align: left;
-							padding: 2px;
-						}
-					}
-
-					:global(.button) {
-						align-self: end;
-					}
-				}
 			}
 		}
 
