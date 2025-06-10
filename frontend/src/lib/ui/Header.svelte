@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { CircleUserRoundIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from "@lucide/svelte";
+	import { PanelLeftCloseIcon, PanelLeftOpenIcon } from "@lucide/svelte";
+	import AppOptions from "./AppOptions.svelte";
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -22,9 +23,7 @@
 		<div class="barsearch"></div>
 	</div>
 	<div class="header-right">
-		<button class="header-action">
-			<CircleUserRoundIcon color="#cdd6f4" size={30} />
-		</button>
+		<AppOptions />
 	</div>
 </header>
 

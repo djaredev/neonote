@@ -123,7 +123,7 @@
 	}
 
 	.sidebar-link:hover {
-		background-color: #181825;
+		background-color: #1e1e2e;
 		color: #cdd6f4;
 	}
 
