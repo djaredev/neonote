@@ -27,10 +27,12 @@
 			<div class="user-email">admin@example.com</div>
 		</div>
 		<div class="dropdown-content">
-			<button class="dropdown-item">
+			<!-- <button class="dropdown-item"> -->
+			<!-- </button> -->
+			<a href="/settings/account" class="dropdown-item">
 				<SettingsIcon class="dropdown-icon" />
 				<span>Settings</span>
-			</button>
+			</a>
 			<div class="dropdown-separator"></div>
 			<button class="dropdown-item">
 				<LogOutIcon class="dropdown-icon" />
@@ -111,6 +113,7 @@
 		background: inherit;
 		width: 100%;
 		text-align: left;
+		text-decoration: none;
 	}
 
 	.dropdown-item:hover {
