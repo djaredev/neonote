@@ -11,7 +11,6 @@
 		box-sizing: border-box;
 	}
 	.button {
-		width: 80px;
 		background-color: #cdd6f4;
 		border: none;
 		color: #11111b;
