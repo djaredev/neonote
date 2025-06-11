@@ -40,22 +40,21 @@
 	</div>
 	<div class="sidebar-content">
 		<div class="sidebar-group">
-			<div class="sidebar-link active" title="notes">
-				<!-- <img src={newNote} alt="Icono" width="30" height="30" /> -->
+			<div class="sidebar-link active" data-tooltip="Take a note">
 				<CirclePlusIcon class="sidebar-icon" color="#cdd6f4" size={30} />
 				<span class="sidebar-label">Take a note</span>
 			</div>
 		</div>
 		<div class="sidebar-group">
-			<a href="/" class="sidebar-link active" title="notes">
+			<a href="/" class="sidebar-link active" data-tooltip="Notes">
 				<NotebookPenIcon class="sidebar-icon" color="#cdd6f4" size={30} />
 				<span class="sidebar-label">Notes</span>
 			</a>
-			<a href="/archive" class="sidebar-link" title="archive">
+			<a href="/archive" class="sidebar-link" data-tooltip="Archive">
 				<ArchiveIcon class="sidebar-icon" color="#cdd6f4" size={30} />
 				<span class="sidebar-label">Archive</span>
 			</a>
-			<a href="/trash" class="sidebar-link" title="trash">
+			<a href="/trash" class="sidebar-link" data-tooltip="Trash">
 				<Trash2Icon class="sidebar-icon" color="#cdd6f4" size={30} />
 				<span class="sidebar-label">Trash</span>
 			</a>
@@ -71,7 +70,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		overflow: hidden;
+		/* overflow: hidden; */
 		gap: 20px;
 		border-right: 1px solid #313244;
 		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -119,7 +118,9 @@
 		padding: 10px;
 		box-sizing: border-box;
 		/* border: 1px solid white; */
-		overflow: hidden;
+		/* overflow: hidden; */
+
+		z-index: 1;
 	}
 
 	.sidebar-link:hover {
@@ -183,16 +184,46 @@
 		height: 100%;
 		background: rgba(0, 0, 0, 0.8);
 		backdrop-filter: blur(5px);
-		/* display: flex; */
-		/* align-items: center; */
-		/* justify-content: center; */
 		z-index: 1000;
 		opacity: 1;
-		/* visibility: hidden; */
 		transition: all 5s ease;
 	}
 
 	:global(.sidebar-icon) {
 		min-width: 30px;
+	}
+
+	[data-tooltip] {
+		position: relative;
+		cursor: pointer;
+		transition: all 0.3s ease;
+	}
+
+	[data-tooltip]::before {
+		opacity: 0;
+		visibility: hidden;
+		position: absolute;
+		pointer-events: none;
+		transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+		transform: translateX(-10px);
+		content: attr(data-tooltip);
+		background: #11111b;
+		color: #cdd6f4;
+		font-size: 14px;
+		padding: 12px 16px;
+		border-radius: 10px;
+		white-space: nowrap;
+		left: calc(100% + 15px);
+		top: 50%;
+		transform: translateY(-50%) translateX(-10px);
+		border: 1px solid #313244;
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+		z-index: 1000;
+	}
+
+	.sidebar:not(.sidebar-expanded) [data-tooltip]:hover::before {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(-50%) translateX(0);
 	}
 </style>
