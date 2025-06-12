@@ -67,6 +67,6 @@
 <style>
 	.placeholder:empty::before {
 		content: attr(aria-label);
-		opacity: 0.7;
+		color: #585b70;
 	}
 </style>

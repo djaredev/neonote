@@ -50,6 +50,7 @@
 	:global(.note) {
 		position: absolute;
 		transition: all 0.12s ease;
+		color: #cdd6f4;
 		/* top: 0px; */
 		/* left: 0px; */
 		/* overflow: hidden; */
@@ -61,7 +62,7 @@
 		flex-direction: column;
 		width: 240px;
 		max-height: 590px;
-		color: white;
+		color: inherit;
 		background: #11111b;
 		border: 1px solid #313244;
 		border-radius: 10px;
@@ -77,6 +78,8 @@
 	}
 
 	:global(.note-title) {
+		color: inherit;
+		font-size: 16px;
 		padding: 10px;
 		min-height: 50px;
 		max-height: 100px;
@@ -87,6 +90,7 @@
 	}
 
 	:global(.note-body) {
+		color: inherit;
 		flex-grow: 1;
 		overflow: hidden;
 		padding: 10px;
@@ -119,6 +123,8 @@
 	}
 
 	:global(.note-title-expand) {
+		color: #cdd6f4;
+		font-size: 18px;
 		padding: 15px;
 		min-height: 50px;
 		max-height: 100px;
@@ -127,15 +133,18 @@
 		outline: none;
 		box-sizing: border-box;
 		overflow: scroll;
+		cursor: text;
 	}
 
 	:global(.note-body-expand) {
+		color: #cdd6f4;
 		flex-grow: 1;
 		padding: 15px;
 		background: inherit;
 		outline: none;
 		box-sizing: border-box;
 		overflow: scroll;
+		cursor: text;
 	}
 
 	:global(.note-footer) {
