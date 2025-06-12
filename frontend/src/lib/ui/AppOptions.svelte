@@ -29,7 +29,7 @@
 		<div class="dropdown-content">
 			<!-- <button class="dropdown-item"> -->
 			<!-- </button> -->
-			<a href="/settings/account" class="dropdown-item">
+			<a href="/settings/account" class="dropdown-item" onclick={() => (isOpen = false)}>
 				<SettingsIcon class="dropdown-icon" />
 				<span>Settings</span>
 			</a>
