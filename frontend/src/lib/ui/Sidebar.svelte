@@ -1,6 +1,7 @@
 <script lang="ts">
 	import neonote from "$lib/icons/neonote.svg";
 	import { ArchiveIcon, Trash2Icon, NotebookPenIcon, CirclePlusIcon } from "@lucide/svelte";
+	import MakeNote from "./MakeNote.svelte";
 
 	let { isOpen = $bindable(false) } = $props();
 
@@ -34,145 +35,153 @@
 <nav class={["sidebar", isOpen && "sidebar-expanded"]} id="sidebar" bind:this={sidebar}>
 	<div class="sidebar-header">
 		<div class="sidebar-header-title">
-			<img src={neonote} alt="Icono" width="50" height="50" />
-			<span class="sidebar-label">Neonote</span>
+			<img src={neonote} alt="Icono" width="40" height="40" />
+			<span class="item-label">Neonote</span>
 		</div>
 	</div>
 	<div class="sidebar-content">
 		<div class="sidebar-group">
-			<div class="sidebar-link active" data-tooltip="Take a note">
-				<CirclePlusIcon class="sidebar-icon" color="#cdd6f4" size={30} />
-				<span class="sidebar-label">Take a note</span>
+			<div data-tooltip="Take a note">
+				<MakeNote class="item">
+					<div class="item-icon">
+						<CirclePlusIcon size={34} color="#11111b" fill="#cdd6f4" />
+					</div>
+					<span class="item-label">Take a note</span>
+				</MakeNote>
 			</div>
 		</div>
 		<div class="sidebar-group">
-			<a href="/" class="sidebar-link active" data-tooltip="Notes">
-				<NotebookPenIcon class="sidebar-icon" color="#cdd6f4" size={30} />
-				<span class="sidebar-label">Notes</span>
+			<a href="/" class="item" data-tooltip="Notes">
+				<div class="item-icon">
+					<NotebookPenIcon />
+				</div>
+				<div class="item-label">
+					<span class="sidebar-item-label">Notes</span>
+				</div>
 			</a>
-			<a href="/archive" class="sidebar-link" data-tooltip="Archive">
-				<ArchiveIcon class="sidebar-icon" color="#cdd6f4" size={30} />
-				<span class="sidebar-label">Archive</span>
+			<a href="/archive" class="item" data-tooltip="Archive">
+				<div class="item-icon">
+					<ArchiveIcon />
+				</div>
+				<span class="item-label">Archive</span>
 			</a>
-			<a href="/trash" class="sidebar-link" data-tooltip="Trash">
-				<Trash2Icon class="sidebar-icon" color="#cdd6f4" size={30} />
-				<span class="sidebar-label">Trash</span>
+			<a href="/trash" class="item" data-tooltip="Trash">
+				<div class="item-icon">
+					<Trash2Icon />
+				</div>
+				<span class="item-label">Trash</span>
 			</a>
 		</div>
 	</div>
 </nav>
 
 <style>
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
 	.sidebar {
-		width: 50px;
-		background-color: #11111b;
-		padding: 10px;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		/* overflow: hidden; */
 		gap: 20px;
-		border-right: 1px solid #313244;
+		width: 60px;
+		padding: 10px;
+		background: #11111b;
+		color: #cdd6f4;
+		outline: 1px solid #313244;
 		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-		/* border: 1px solid white; */
-	}
+		.sidebar-header {
+			width: 100%;
 
-	.sidebar-expanded {
-		width: 200px;
-		.sidebar-label {
-			opacity: 1;
-		}
-	}
-
-	.sidebar-header {
-		width: 100%;
-		/* border: 1px solid white; */
-	}
-	.sidebar-footer {
-		width: 100%;
-		color: #cdd6f4;
-		/* border: 1px solid white; */
-	}
-
-	.sidebar-content {
-		display: flex;
-		width: 100%;
-		flex-direction: column;
-		gap: 50px;
-		box-sizing: border-box;
-		flex: 1;
-		/* border: 1px solid white; */
-	}
-
-	.sidebar-link {
-		color: #cdd6f4;
-		display: flex;
-		text-decoration: none;
-		width: 100%;
-		block-size: 50px;
-		align-items: center;
-		gap: 20px;
-		outline: 2px solid transparent;
-		border-radius: 10px;
-		padding: 10px;
-		box-sizing: border-box;
-		/* border: 1px solid white; */
-		/* overflow: hidden; */
-
-		z-index: 1;
-	}
-
-	.sidebar-link:hover {
-		background-color: #1e1e2e;
-		color: #cdd6f4;
-	}
-
-	.sidebar-group {
-		width: 100%;
-		display: flex;
-		gap: 10px;
-		flex-direction: column;
-		/* border: 1px solid white; */
-	}
-
-	.sidebar-header-title {
-		color: #cdd6f4;
-		font-size: 24px;
-		font-weight: bold;
-		/* padding-left: 20px; */
-		display: flex;
-		text-decoration: none;
-		width: 100%;
-		block-size: 50px;
-		align-items: center;
-		gap: 10px;
-		outline: 2px solid transparent;
-		border-radius: 10px;
-		/* padding: 10px; */
-		box-sizing: border-box;
-	}
-
-	.sidebar-label {
-		white-space: nowrap;
-		overflow: hidden;
-		transition: opacity 0.3s ease;
-		opacity: 0;
-	}
-
-	@media (width < 745px) {
-		.sidebar {
-			position: fixed;
-			height: 100vh;
-			transform: translateX(-100%);
-			z-index: 1001;
-			/* width: 0px; */
-			/* display: none; */
+			.sidebar-header-title {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				font-size: 24px;
+				font-weight: bold;
+				width: 100%;
+				block-size: 50px;
+			}
 		}
 
-		.sidebar-expanded {
+		.sidebar-content {
 			display: flex;
-			transform: translateX(0);
+			flex-direction: column;
+			flex: 1;
+			gap: 50px;
+			width: 100%;
+
+			.sidebar-group {
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+				width: 100%;
+
+				:global(.item) {
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					text-decoration: none;
+					border-radius: 10px;
+				}
+
+				:global(.item:hover) {
+					background-color: #1e1e2e;
+				}
+
+				.item-icon {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					min-width: 40px;
+					min-height: 40px;
+					color: #cdd6f4;
+				}
+			}
+		}
+
+		:global(.sidebar-icon) {
+			min-width: 24px;
+			min-height: 24px;
+		}
+
+		.item-label {
+			color: #cdd6f4;
+			white-space: nowrap;
+			overflow: hidden;
+			transition: opacity 0.3s ease;
+			opacity: 0;
+		}
+
+		&.sidebar-expanded {
+			width: 180px;
+
+			.item-label {
+				opacity: 1;
+			}
+		}
+
+		@media (width < 745px) {
+			& {
+				position: fixed;
+				height: 100vh;
+				transform: translateX(-100%);
+				z-index: 1001;
+				/* width: 0px; */
+				/* display: none; */
+			}
+
+			&.sidebar-expanded {
+				display: flex;
+				transform: translateX(0);
+			}
+		}
+
+		.sidebar-footer {
+			width: 100%;
 		}
 	}
 
@@ -187,10 +196,6 @@
 		z-index: 1000;
 		opacity: 1;
 		transition: all 5s ease;
-	}
-
-	:global(.sidebar-icon) {
-		min-width: 30px;
 	}
 
 	[data-tooltip] {

@@ -4,6 +4,8 @@
 	import TextEditor from "$lib/components/Editor/TextEditor.svelte";
 	import { ArchiveIcon, Trash2Icon } from "@lucide/svelte";
 
+	let { class: className, children } = $props();
+
 	let title = $state("");
 	let content = $state("");
 
@@ -21,8 +23,8 @@
 </script>
 
 <Modal.Root class="make-note" {customCenter}>
-	<Modal.Preview class="make-note-preview">
-		<div class="placeholder">Take a note...</div>
+	<Modal.Preview class={className}>
+		{@render children()}
 	</Modal.Preview>
 	<Modal.Overlay class="overlay-view" {transition} />
 	<Modal.View class="make-note-view">
@@ -45,7 +47,7 @@
 
 <style>
 	:global(.make-note) {
-		align-self: center;
+		/* align-self: center; */
 	}
 
 	:global(.placeholder) {
@@ -54,22 +56,39 @@
 		padding-left: 15px;
 	}
 
-	:global(.make-note-preview) {
-		/* position: absolute; */
-		display: flex;
-		align-items: center;
-		justify-content: start;
+	/* :global(.make-note-preview) { */
+	/* 	display: flex; */
+	/* 	align-items: center; */
+	/* 	justify-content: start; */
+	/**/
+	/* 	width: 600px; */
+	/* 	max-height: 450px; */
+	/* 	overflow: hidden; */
+	/* 	transition: all 0s ease; */
+	/* 	color: white; */
+	/* 	background: #11111b; */
+	/* 	border-radius: 8px; */
+	/* 	border: 1px solid #313244; */
+	/* 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+	/* 	height: 54px; */
+	/* } */
 
-		width: 600px;
-		max-height: 450px;
-		overflow: hidden;
-		transition: all 0s ease;
-		color: white;
-		background: #11111b;
-		border-radius: 8px;
-		border: 1px solid #313244;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		height: 54px;
+	:global(.make-note-preview) {
+		color: #cdd6f4;
+		display: flex;
+		text-decoration: none;
+		width: 100%;
+		block-size: 50px;
+		align-items: center;
+		gap: 20px;
+		outline: 2px solid transparent;
+		border-radius: 10px;
+		padding: 10px;
+		box-sizing: border-box;
+		/* border: 1px solid white; */
+		/* overflow: hidden; */
+
+		z-index: 1;
 	}
 
 	:global(.make-note-view) {
