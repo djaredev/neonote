@@ -14,6 +14,7 @@
 		bind:clientHeight={null, modalState.contentHeight}
 		ontransitionend={modalState.ontransitionend}
 		ontransitionstart={modalState.ontransitionstart}
+		ontransitioncancel={modalState.ontransitioncancel}
 	>
 		{@render children()}
 	</div>

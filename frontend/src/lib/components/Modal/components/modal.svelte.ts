@@ -1,22 +1,25 @@
 import { setContext, getContext, tick } from "svelte";
+import handler from "$lib/utils/handler";
 class ModalState {
 	modal: HTMLElement | null = $state(null);
 	isOpen: boolean = $state(false);
 	view = $state<HTMLElement | null>(null);
 	preview = $state<HTMLElement | null>(null);
 	center = $state(false);
-	ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
-	ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
+	ontransitionstart: ((event: TransitionEvent) => void) | null = null;
+	ontransitionend: ((event: TransitionEvent) => void) | null = null;
+	ontransitioncancel: ((event: TransitionEvent) => void) | null = null;
 	resizeObserver = $state(false);
 	overlay = $state(false);
 	customCenter: ((width: number, heigth: number) => { left: number; top: number }) | undefined;
 	constructor(customCenter?: (width: number, heigth: number) => { left: number; top: number }) {
 		this.customCenter = customCenter;
 	}
-	//
-	onOpen = () => {
+
+	onOpen = handler(() => {
 		if (!this.preview || !this.modal) return;
 		this.isOpen = this.overlay = true;
+		this.onOpen.clear();
 		tick().then(() => {
 			tick().then(() => {
 				if (!this.view || !this.preview || !this.modal) return;
@@ -42,13 +45,14 @@ class ModalState {
 					this.waitForTransitions().then(() => {
 						this.resizeObserver = this.center = true;
 						this.resizeView(width, "auto");
+						this.onClose.restore();
 					});
 				});
 			});
 		});
-	};
+	}, this);
 
-	onClose = (event: MouseEvent, onClose) => {
+	onClose = handler((event: MouseEvent, callback) => {
 		if (
 			!this.preview ||
 			!this.view ||
@@ -56,6 +60,7 @@ class ModalState {
 			this.view.contains(event.target as Node)
 		)
 			return;
+		this.onClose.clear();
 		const rect = this.modal.getBoundingClientRect();
 		this.overlay = this.resizeObserver = this.center = false;
 		this.resizeView(this.view.offsetWidth, this.view.offsetHeight);
@@ -64,9 +69,10 @@ class ModalState {
 		this.waitForTransitions().then(() => {
 			if (this.preview) this.preview.style.visibility = "visible";
 			this.isOpen = false;
-			onClose?.();
+			this.onOpen.restore();
+			callback?.();
 		});
-	};
+	}, this);
 
 	contentHeight = (cHeight: number) => {
 		if (!this.view || !this.center) return;
@@ -103,20 +109,22 @@ class ModalState {
 
 			this.ontransitionstart = (event: TransitionEvent) => {
 				if (event.target != this.view) return;
-				console.log("Transition start: " + event.propertyName);
-				console.log(event.target == this.view);
 				activeTransitions++;
 			};
 
 			this.ontransitionend = (event: TransitionEvent) => {
 				if (event.target != this.view) return;
 				activeTransitions--;
-				console.log("Transition end: " + event.propertyName);
 				if (activeTransitions === 0) {
-					this.ontransitionstart = null;
-					this.ontransitionend = null;
+					this.ontransitionstart = this.ontransitionstart = this.ontransitionstart = null;
 					resolve();
 				}
+			};
+
+			this.ontransitioncancel = (event: TransitionEvent) => {
+				if (event.target != this.view) return;
+				this.ontransitionstart = this.ontransitionstart = this.ontransitionstart = null;
+				resolve();
 			};
 		});
 	};
