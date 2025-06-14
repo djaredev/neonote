@@ -7,12 +7,11 @@
 	let ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
 	let ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
 
-	const notes = $derived(getNoteState().getAll());
+	const noteState = getNoteState();
 
 	export function masonry() {
 		const container = document.getElementById("layout");
 		if (!container) return;
-		console.log(container.offsetWidth);
 		const items: HTMLCollection = container.children;
 
 		const width = 240;
@@ -41,7 +40,7 @@
 	});
 
 	$effect(() => {
-		notes.length;
+		noteState.notes.length;
 		console.log("Masonry effect");
 		masonry();
 	});
