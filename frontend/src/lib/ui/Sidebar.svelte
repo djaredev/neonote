@@ -51,7 +51,7 @@
 			</div>
 		</div>
 		<div class="sidebar-group">
-			<a href="/" class="item" data-tooltip="Notes">
+			<a href="/" class="item" data-tooltip="Notes" data-sveltekit-preload-data="off">
 				<div class="item-icon">
 					<NotebookPenIcon />
 				</div>
@@ -59,13 +59,13 @@
 					<span class="sidebar-item-label">Notes</span>
 				</div>
 			</a>
-			<a href="/archive" class="item" data-tooltip="Archive">
+			<a href="/archive" class="item" data-tooltip="Archive" data-sveltekit-preload-data="off">
 				<div class="item-icon">
 					<ArchiveIcon />
 				</div>
 				<span class="item-label">Archive</span>
 			</a>
-			<a href="/trash" class="item" data-tooltip="Trash">
+			<a href="/trash" class="item" data-tooltip="Trash" data-sveltekit-preload-data="off">
 				<div class="item-icon">
 					<Trash2Icon />
 				</div>
