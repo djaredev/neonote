@@ -1,10 +1,13 @@
 <script>
 	import Sidebar from "$lib/ui/Sidebar.svelte";
 	import Header from "$lib/ui/Header.svelte";
+	import { setNoteState } from "$lib/state/note.svelte";
 
 	let { children } = $props();
 
 	let isOpen = $state(false);
+
+	setNoteState([]);
 </script>
 
 <Sidebar bind:isOpen />

@@ -3,11 +3,16 @@
 	import { Modal } from "$lib/components/Modal";
 	import TextEditor from "$lib/components/Editor/TextEditor.svelte";
 	import { ArchiveIcon, Trash2Icon } from "@lucide/svelte";
+	import { getNoteState } from "$lib/state/note.svelte";
 
 	let { class: className, children } = $props();
 
-	let title = $state("");
-	let content = $state("");
+	const noteState = getNoteState();
+
+	const note = $state({
+		title: "",
+		content: ""
+	});
 
 	function customCenter(width: number, height: number) {
 		return {
@@ -18,18 +23,26 @@
 
 	let transition = {
 		type: fade,
-		duration: { duration: 200 }
+		duration: { duration: 100 }
 	};
+
+	function onClose() {
+		noteState.create($state.snapshot(note));
+		console.log("Close modal..");
+		console.log(noteState.notes.length);
+		note.title = "";
+		note.content = "";
+	}
 </script>
 
-<Modal.Root class="make-note" {customCenter}>
+<Modal.Root class="make-note" {customCenter} {onClose}>
 	<Modal.Preview class={className}>
 		{@render children()}
 	</Modal.Preview>
 	<Modal.Overlay class="overlay-view" {transition} />
 	<Modal.View class="make-note-view">
-		<TextEditor class="note-title-expand" bind:value={title} placeholder="Title" />
-		<TextEditor class="note-body-expand" bind:value={content} placeholder="Take a note..." />
+		<TextEditor class="note-title-expand" bind:value={note.title} placeholder="Title" />
+		<TextEditor class="note-body-expand" bind:value={note.content} placeholder="Take a note..." />
 		<div class="note-footer">
 			<div class="note-options">
 				<button>
@@ -49,29 +62,6 @@
 	:global(.make-note) {
 		/* align-self: center; */
 	}
-
-	:global(.placeholder) {
-		font-size: 16px;
-		opacity: 0.6;
-		padding-left: 15px;
-	}
-
-	/* :global(.make-note-preview) { */
-	/* 	display: flex; */
-	/* 	align-items: center; */
-	/* 	justify-content: start; */
-	/**/
-	/* 	width: 600px; */
-	/* 	max-height: 450px; */
-	/* 	overflow: hidden; */
-	/* 	transition: all 0s ease; */
-	/* 	color: white; */
-	/* 	background: #11111b; */
-	/* 	border-radius: 8px; */
-	/* 	border: 1px solid #313244; */
-	/* 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-	/* 	height: 54px; */
-	/* } */
 
 	:global(.make-note-preview) {
 		color: #cdd6f4;
@@ -102,7 +92,7 @@
 		border: 1px solid #313244;
 		border-radius: 10px;
 		overflow: hidden;
-		transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+		transition: all 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 		user-select: none;
 		font-size: 1rem;
 		box-sizing: border-box;

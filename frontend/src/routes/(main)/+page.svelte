@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageProps } from "./$types";
-	import { setNoteState } from "$lib/state/note.svelte";
+	import { onDestroy } from "svelte";
+	import { setNoteState, getNoteState } from "$lib/state/note.svelte";
 	import Layout from "$lib/ui/Masonry.svelte";
 	import Note from "$lib/ui/note/Note.svelte";
 	import LazyLoading from "$lib/ui/LazyLoading.svelte";
@@ -8,7 +9,9 @@
 
 	let { data }: PageProps = $props();
 	let layout: Layout;
-	const noteState = setNoteState(data.data);
+	// const noteState = setNoteState(data.data);
+	const noteState = getNoteState();
+	noteState.set(data.data);
 	let length = noteState.notes.length;
 	let count = $state(-10);
 	let isLoadingBottom = false;
@@ -66,6 +69,10 @@
 		}
 		isLoadingTop = false;
 	}
+
+	onDestroy(() => {
+		noteState.set([]);
+	});
 </script>
 
 <Layout bind:this={layout}>

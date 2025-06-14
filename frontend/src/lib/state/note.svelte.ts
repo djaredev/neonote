@@ -1,10 +1,12 @@
 import { getContext, setContext } from "svelte";
 import {
 	archiveNote,
+	createNote,
 	restoreNote,
 	trashNote,
 	unarchiveNote,
 	updateNote,
+	type NoteCreate,
 	type NotePublic
 } from "@neonote/sdk";
 
@@ -14,7 +16,19 @@ class NoteState {
 		this.notes = notes;
 	}
 
-	create = () => {};
+	set(notes: NotePublic[]) {
+		this.notes = notes;
+	}
+
+	create = async (note: NoteCreate) => {
+		if (note.title === "" || note.content === "") return;
+		const res = await createNote({ body: note });
+		if (res.data) {
+			console.log("Note created");
+			this.notes.unshift(res.data);
+			console.log(this.notes.length);
+		}
+	};
 
 	findById = (id: string): NotePublic | undefined => {
 		return this.notes.find((n) => n.id === id);
