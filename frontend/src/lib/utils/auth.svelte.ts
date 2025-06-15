@@ -23,3 +23,10 @@ export async function loginAuth() {
 	}
 }
 
+export const isUnauthorizedError = (status: number): boolean => {
+	if (status == 401 || status == 403) {
+		return true;
+	}
+	return false;
+};
+
