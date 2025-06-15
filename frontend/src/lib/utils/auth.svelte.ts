@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { userState } from "$lib/state/user.svelte";
 import { whoami } from "@neonote/sdk";
 import { redirect } from "@sveltejs/kit";
@@ -12,6 +13,7 @@ export async function auth() {
 		redirect(302, "/login");
 	}
 }
+
 export async function loginAuth() {
 	if (!userState.username) {
 		const res = await whoami();
@@ -30,3 +32,7 @@ export const isUnauthorizedError = (status: number): boolean => {
 	return false;
 };
 
+export const logout = () => {
+	userState.clear();
+	goto("/login");
+};
