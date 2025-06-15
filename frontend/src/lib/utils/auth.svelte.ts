@@ -12,3 +12,14 @@ export async function auth() {
 		redirect(302, "/login");
 	}
 }
+export async function loginAuth() {
+	if (!userState.username) {
+		const res = await whoami();
+		if (res.data) userState.set(res.data);
+	}
+
+	if (userState.username) {
+		redirect(302, "/");
+	}
+}
+
