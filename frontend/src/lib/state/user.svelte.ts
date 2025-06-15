@@ -1,15 +1,25 @@
-import { whoami, type UserPublic } from "@neonote/sdk";
+import { type UserPublic } from "@neonote/sdk";
 
-const user: UserPublic = $state({
-	username: "",
-	email: ""
-});
+class UserState {
+	username: string = $state("");
+	email: string = $state("");
 
-export const setUser = (usr: UserPublic): void => {
-	user.username = usr.username;
-	user.email = usr.email;
-};
+	set = (user: UserPublic) => {
+		this.username = user.username;
+		this.email = user.email;
+	};
 
-export const getUser = (): UserPublic => {
-	return user;
-};
+	get = () => {
+		return {
+			username: this.username,
+			email: this.email
+		};
+	};
+
+	clear = () => {
+		this.username = "";
+		this.email = "";
+	};
+}
+
+export const userState = new UserState();

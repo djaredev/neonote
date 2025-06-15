@@ -1,14 +1,14 @@
-import { getUser, setUser } from "$lib/state/user.svelte";
+import { userState } from "$lib/state/user.svelte";
 import { whoami } from "@neonote/sdk";
 import { redirect } from "@sveltejs/kit";
 
 export async function auth() {
-	if (!getUser().username) {
+	if (!userState.username) {
 		const res = await whoami();
-		if (res.data) setUser(res.data);
+		if (res.data) userState.set(res.data);
 	}
 
-	if (!getUser().username) {
+	if (!userState.username) {
 		redirect(302, "/login");
 	}
 }

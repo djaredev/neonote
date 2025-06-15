@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { setUser } from "$lib/state/user.svelte";
+	import { userState } from "$lib/state/user.svelte";
 	import { login, type BodyLoginLoginPost } from "@neonote/sdk";
+
 	const body: BodyLoginLoginPost = $state({
 		username: "",
 		password: ""
@@ -12,7 +13,7 @@
 			body: body
 		});
 		if (res.data) {
-			setUser(res.data);
+			userState.set(res.data);
 			goto("/");
 		}
 	}
