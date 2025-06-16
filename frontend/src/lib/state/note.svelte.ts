@@ -2,6 +2,7 @@ import { getContext, setContext } from "svelte";
 import {
 	archiveNote,
 	createNote,
+	deleteNote,
 	restoreNote,
 	trashNote,
 	unarchiveNote,
@@ -51,6 +52,17 @@ class NoteState {
 				}
 			});
 			return res;
+		}
+	};
+
+	delete = async (id: string) => {
+		try {
+			await deleteNote({ path: { id: id } });
+			this.notes = this.notes.filter((n) => n.id !== id);
+			console.log("Note deleted");
+		} catch (error) {
+			console.log("Error deleting note");
+			console.log(error);
 		}
 	};
 
