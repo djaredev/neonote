@@ -1,11 +1,11 @@
 import { goto } from "$app/navigation";
 import { userState } from "$lib/state/user.svelte";
-import { whoami } from "@neonote/sdk";
+import { whoami, authclient } from "@neonote/sdk";
 import { redirect } from "@sveltejs/kit";
 
 export async function auth() {
 	if (!userState.username) {
-		const res = await whoami();
+		const res = await whoami({ client: authclient });
 		if (res.data) userState.set(res.data);
 	}
 
@@ -16,7 +16,7 @@ export async function auth() {
 
 export async function loginAuth() {
 	if (!userState.username) {
-		const res = await whoami();
+		const res = await whoami({ client: authclient });
 		if (res.data) userState.set(res.data);
 	}
 
