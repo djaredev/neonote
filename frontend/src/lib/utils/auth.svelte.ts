@@ -36,3 +36,10 @@ export const logout = () => {
 	userState.clear();
 	goto("/login");
 };
+
+export const ensureAuthenticated = (response: Response) => {
+	if (isUnauthorizedError(response.status)) {
+		logout();
+	}
+	return response;
+};
