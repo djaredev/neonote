@@ -4,7 +4,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.api.deps import CurrentUser
 from app.core.security import create_access_token
 from app.models import UserPublic
-from app.service import UserService
+from app.repository.user_repository import UserRepository
+from app.service.auth_service import AuthService
 
 router = APIRouter(tags=["auth"])
 
@@ -13,14 +14,16 @@ router = APIRouter(tags=["auth"])
 async def login(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     response: Response,
-    userService: UserService,
+    service: AuthService,
+    user_repo: UserRepository,
 ):
-    user = userService.autentication(form_data.username, form_data.password)
+    user = service.login(user_repo, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect username or password",
         )
+
     access_token = create_access_token(user.id)
     response.set_cookie(
         key="neonote_token",
