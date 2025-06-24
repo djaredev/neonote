@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from app.models import NoteCreate
 from app.models.note import NotePublic, NoteUpdate, NotesPublic
+from app.models.utils import Direction
 from app.service.note_service import NoteService
 
 router = APIRouter(prefix="/notes", tags=["notes"])
@@ -17,11 +18,12 @@ async def create_note(note: NoteCreate, service: NoteService):
 @router.get("", response_model=NotesPublic)
 async def get_notes(
     service: NoteService,
+    cursor: str | None = None,
     limit: int = 10,
-    offset: int = 0,
+    direction: Direction = Direction.NEXT,
 ):
-    notes = service.get_notes(limit, offset)
-    return NotesPublic(notes=notes)  # type: ignore
+    notes, next_cursor = service.get_notes(cursor, limit, direction)
+    return NotesPublic(notes=notes, next_cursor=next_cursor)  # type: ignore
 
 
 @router.get("/archived", response_model=NotesPublic)

@@ -10,9 +10,11 @@ from typing import Annotated
 from uuid import UUID
 
 from fastapi import Depends
-from sqlmodel import select
+from sqlmodel import col, select, or_, and_
 from app.api.deps import CurrentUser, SessionDep
+from app.core.utils import decode_cursor, encode_cursor
 from app.models.note import Note, NoteCreate, NoteUpdate
+from app.models.utils import Cursor, Direction
 
 
 class _NoteService:
@@ -34,15 +36,38 @@ class _NoteService:
         self.session.refresh(db_note)
         return db_note
 
-    def get_notes(self, limit: int, offset: int):
-        return self.session.exec(
+    def get_notes(self, encoded_cursor: str | None, limit: int, direction: Direction):
+        statement = (
             select(Note)
             .where(Note.user_id == self.user.id)
             .where(Note.is_archived == False)
             .where(Note.is_trashed == False)
-            .order_by(Note.created_at.desc())  # type: ignore
-            .limit(limit)
-            .offset(offset)
+        )
+        if encoded_cursor:
+            cursor = decode_cursor(encoded_cursor)
+            if direction == Direction.NEXT:
+                statement = statement.where(
+                    or_(
+                        Note.created_at < cursor.created_at,
+                        and_(Note.created_at == cursor.created_at, Note.id < cursor.id),
+                    )
+                ).order_by(col(Note.created_at).desc(), col(Note.id).desc())
+            else:
+                statement = statement.where(
+                    or_(
+                        Note.created_at > cursor.created_at,
+                        and_(Note.created_at == cursor.created_at, Note.id > cursor.id),
+                    )
+                ).order_by(col(Note.created_at).asc(), col(Note.id).asc())
+        else:
+            statement = statement.order_by(
+                col(Note.created_at).desc(), col(Note.id).desc()
+            )
+        notes = self.session.exec(statement.limit(limit)).all()
+        if not notes:
+            return [], None
+        return notes, encode_cursor(
+            Cursor(id=notes[-1].id, created_at=notes[-1].created_at)
         )
 
     def get_archived_notes(self):

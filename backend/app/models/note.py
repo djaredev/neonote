@@ -38,3 +38,4 @@ class NotePublic(NoteBase):
 
 class NotesPublic(SQLModel):
     notes: list[NotePublic]
+    next_cursor: str | None
