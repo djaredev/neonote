@@ -7,6 +7,7 @@
 	import { getNotes } from "@neonote/sdk";
 	import LazyLoading from "./LazyLoading.svelte";
 
+	let { getData = getNotes, NoteType = Note } = $props();
 	let ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
 	let ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
 	const noteState = getNoteState();
@@ -67,7 +68,7 @@
 	const loadMore = handler(async () => {
 		const lastNote = noteState.notes[noteState.notes.length - 1];
 		const cursor = createCursor(lastNote.id, lastNote.created_at);
-		const data = await getNotes({
+		const data = await getData({
 			query: {
 				cursor: cursor
 			}
@@ -97,7 +98,7 @@
 		const previousScrollTop = content.scrollTop;
 		const firstNote = noteState.notes[0];
 		const cursor = createCursor(firstNote.id, firstNote.created_at);
-		const data = await getNotes({
+		const data = await getData({
 			query: {
 				cursor: cursor,
 				direction: "prev"
@@ -147,7 +148,7 @@
 	{/if}
 	<div class="grid" id="grid">
 		{#each noteState.notes as note (note.id)}
-			<Note {masonry} id={note.id} />
+			<NoteType {masonry} id={note.id} />
 		{/each}
 		<LazyLoading loadData={loadMore.once} />
 	</div>
