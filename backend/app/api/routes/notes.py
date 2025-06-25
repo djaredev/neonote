@@ -1,5 +1,5 @@
 from uuid import UUID
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 
 from app.models import NoteCreate
 from app.models.note import NotePublic, NoteUpdate, NotesPublic
@@ -27,64 +27,53 @@ async def get_notes(
 
 
 @router.get("/archived", response_model=NotesPublic)
-async def get_archived_notes(service: NoteService):
-    archived_notes = service.get_archived_notes()
-    return NotesPublic(notes=archived_notes)  # type: ignore
+async def get_archived_notes(
+    service: NoteService,
+    cursor: str | None = None,
+    limit: int = 10,
+    direction: Direction = Direction.NEXT,
+):
+    archived_notes, next_cursor = service.get_archived_notes(cursor, limit, direction)
+    return NotesPublic(notes=archived_notes, next_cursor=next_cursor)  # type: ignore
 
 
 @router.get("/trashed", response_model=NotesPublic)
-async def get_trashed_notes(service: NoteService):
-    trashed_notes = service.get_trashed_notes()
-    return NotesPublic(notes=trashed_notes)  # type: ignore
+async def get_trashed_notes(
+    service: NoteService,
+    cursor: str | None = None,
+    limit: int = 10,
+    direction: Direction = Direction.NEXT,
+):
+    trashed_notes, next_cursor = service.get_trashed_notes(cursor, limit, direction)
+    return NotesPublic(notes=trashed_notes, next_cursor=next_cursor)  # type: ignore
 
 
 @router.put("/{id}", response_model=NotePublic)
 async def update_note(note: NoteUpdate, service: NoteService, id: UUID):
-    updated_note = service.update_note(id, note)
-    if not updated_note:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
-        )
-    return updated_note
+    return service.update_note(id, note)
 
 
 @router.delete("/{id}", response_model=NotePublic)
 async def delete_note(service: NoteService, id: UUID):
-    deleted_note = service.delete_note(id)
-    if not deleted_note:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
-        )
-    return deleted_note
+    return service.delete_note(id)
 
 
 @router.post("/{id}/archive", status_code=status.HTTP_204_NO_CONTENT)
 async def archive_note(service: NoteService, id: UUID):
-    if not service.archive_note(id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
-        )
+    service.archive_note(id)
 
 
 @router.post("/{id}/unarchive", status_code=status.HTTP_204_NO_CONTENT)
 async def unarchive_note(service: NoteService, id: UUID):
-    if not service.unarchive_note(id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
-        )
+    service.unarchive_note(id)
 
 
 @router.post("/{id}/trash", status_code=status.HTTP_204_NO_CONTENT)
 async def trash_note(service: NoteService, id: UUID):
-    if not service.trash_note(id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
-        )
+    service.trash_note(id)
 
 
 @router.post("/{id}/restore", status_code=status.HTTP_204_NO_CONTENT)
 async def restore_note(service: NoteService, id: UUID):
-    if not service.restore_note(id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Note not found"
+    service.restore_note(id)
         )
