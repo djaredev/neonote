@@ -2,15 +2,19 @@
 	import { onMount } from "svelte";
 	import Note from "$lib/ui/note/Note.svelte";
 	import { getNoteState } from "$lib/state/note.svelte";
+	import handler from "$lib/utils/handler";
+	import { createCursor } from "$lib/utils/cursor";
+	import { getNotes } from "@neonote/sdk";
+	import LazyLoading from "./LazyLoading.svelte";
 
-	let { children } = $props();
 	let ontransitionstart: ((event: TransitionEvent) => void) | null = $state(null);
 	let ontransitionend: ((event: TransitionEvent) => void) | null = $state(null);
-
 	const noteState = getNoteState();
+	const MAX_LOAD = 100;
+	let count = $state(false);
 
-	export function masonry() {
-		const container = document.getElementById("layout");
+	const masonry = () => {
+		const container = document.getElementById("grid");
 		if (!container) return;
 		const items: HTMLCollection = container.children;
 
@@ -33,19 +37,9 @@
 			item.style.left = column * (width + gap) + "px";
 			heights[column] += item.offsetHeight + gap;
 		}
-	}
+	};
 
-	onMount(() => {
-		masonry();
-	});
-
-	$effect(() => {
-		noteState.notes.length;
-		console.log("Masonry effect");
-		masonry();
-	});
-
-	export function waitForTransitions(): Promise<void> {
+	const waitForTransitions = (): Promise<void> => {
 		return new Promise((resolve) => {
 			let activeTransitions = 0;
 
@@ -64,11 +58,79 @@
 				}
 			};
 		});
-	}
+	};
 
-	function onResizeWidth() {
+	const onResizeWidth = () => {
 		masonry();
-	}
+	};
+
+	const loadMore = handler(async () => {
+		const lastNote = noteState.notes[noteState.notes.length - 1];
+		const cursor = createCursor(lastNote.id, lastNote.created_at);
+		const data = await getNotes({
+			query: {
+				cursor: cursor
+			}
+		});
+		if (data.data && data.data.notes.length > 0) {
+			let newLength = noteState.notes.length + data.data.notes.length;
+			if (noteState.notes.length + data.data.notes.length > MAX_LOAD) {
+				noteState.notes.splice(0, newLength - MAX_LOAD);
+				count = true;
+				waitForTransitions().then(() => {
+					noteState.notes.push(...data.data.notes);
+					loadMore.restore();
+				});
+			} else {
+				noteState.notes.push(...data.data.notes);
+				loadMore.restore();
+			}
+		} else {
+			loadMore.restore();
+		}
+	});
+
+	const loadPrevious = handler(async () => {
+		const content = document.getElementById("layout");
+		if (!content) return;
+		const previousScrollHeight = content.scrollHeight;
+		const previousScrollTop = content.scrollTop;
+		const firstNote = noteState.notes[0];
+		const cursor = createCursor(firstNote.id, firstNote.created_at);
+		const data = await getNotes({
+			query: {
+				cursor: cursor,
+				direction: "prev"
+			}
+		});
+		if (data.data && data.data.notes.length > 0) {
+			noteState.notes.unshift(...data.data.notes.reverse());
+			waitForTransitions().then(() => {
+				const newScrollHeight = content.scrollHeight;
+				const deltaHeight = newScrollHeight - previousScrollHeight;
+				content.scrollTop = previousScrollTop + deltaHeight;
+				const currentLength = noteState.notes.length;
+				if (currentLength > MAX_LOAD) {
+					const gap = currentLength - MAX_LOAD;
+					noteState.notes.splice(currentLength - gap, gap);
+				}
+				loadPrevious.restore();
+			});
+		} else {
+			count = false;
+			loadPrevious.restore();
+		}
+	});
+
+	onMount(() => {
+		masonry();
+	});
+
+	$effect(() => {
+		noteState.notes.length;
+		console.log("Masonry effect");
+		masonry();
+	});
 </script>
 
 <svelte:window onresize={masonry} />
@@ -80,7 +142,15 @@
 	{ontransitionend}
 	bind:clientWidth={null, onResizeWidth}
 >
-	{@render children()}
+	{#if count}
+		<LazyLoading loadData={loadPrevious.once} />
+	{/if}
+	<div class="grid" id="grid">
+		{#each noteState.notes as note (note.id)}
+			<Note {masonry} id={note.id} />
+		{/each}
+		<LazyLoading loadData={loadMore.once} />
+	</div>
 </div>
 
 <style>
@@ -88,6 +158,11 @@
 		position: relative;
 		max-width: 1752px;
 		flex: 1;
+		overflow-y: auto;
+	}
+
+	.grid {
+		width: 100%;
 		overflow-y: auto;
 	}
 
