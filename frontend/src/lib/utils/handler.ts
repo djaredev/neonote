@@ -24,6 +24,6 @@ class Handler<T extends any[]> {
 	};
 }
 
-export default function handler<T extends any[]>(callback: (...arg: T) => void, ref: object) {
+export default function handler<T extends any[]>(callback: (...arg: T) => void, ref?: object) {
 	return new Handler(callback.bind(ref));
 }
