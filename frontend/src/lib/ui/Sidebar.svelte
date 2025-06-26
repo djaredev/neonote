@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from "$app/state";
 	import neonote from "$lib/icons/neonote.svg";
 	import { ArchiveIcon, Trash2Icon, NotebookPenIcon, CirclePlusIcon } from "@lucide/svelte";
 	import MakeNote from "./MakeNote.svelte";
@@ -51,21 +52,34 @@
 			</div>
 		</div>
 		<div class="sidebar-group">
-			<a href="/" class="item" data-tooltip="Notes" data-sveltekit-preload-data="off">
+			<a
+				href="/"
+				class="item {page.url.pathname === '/' && 'active'}"
+				data-tooltip="Notes"
+				data-sveltekit-preload-data="off"
+			>
 				<div class="item-icon">
 					<NotebookPenIcon />
 				</div>
-				<div class="item-label">
-					<span class="sidebar-item-label">Notes</span>
-				</div>
+				<span class="item-label">Notes</span>
 			</a>
-			<a href="/archive" class="item" data-tooltip="Archive" data-sveltekit-preload-data="off">
+			<a
+				href="/archive"
+				class="item {page.url.pathname === '/archive' && 'active'}"
+				data-tooltip="Archive"
+				data-sveltekit-preload-data="off"
+			>
 				<div class="item-icon">
 					<ArchiveIcon />
 				</div>
 				<span class="item-label">Archive</span>
 			</a>
-			<a href="/trash" class="item" data-tooltip="Trash" data-sveltekit-preload-data="off">
+			<a
+				href="/trash"
+				class="item {page.url.pathname === '/trash' && 'active'}"
+				data-tooltip="Trash"
+				data-sveltekit-preload-data="off"
+			>
 				<div class="item-icon">
 					<Trash2Icon />
 				</div>
@@ -80,6 +94,10 @@
 		margin: 0;
 		padding: 0;
 		box-sizing: border-box;
+	}
+
+	.active {
+		background-color: #1e1e2e;
 	}
 	.sidebar {
 		display: flex;

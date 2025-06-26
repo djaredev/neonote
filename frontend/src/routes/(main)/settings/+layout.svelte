@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from "$app/state";
 	import { UserCogIcon, WallpaperIcon, Fingerprint } from "@lucide/svelte";
 
 	let { children } = $props();
@@ -10,15 +11,23 @@
 	</div>
 	<div class="settings-content">
 		<div class="settings-options">
-			<a href="/settings/account" class="settings-option" title="account">
+			<a
+				href="/settings/account"
+				class="settings-option {page.url.pathname === '/settings/account' && 'active'}"
+				title="account"
+			>
 				<UserCogIcon color="#cdd6f4" />
 				<span class="option-label">Account</span>
 			</a>
-			<a href="" class="settings-option" title="apparance">
+			<a href="" class="settings-option disabled" title="apparance">
 				<WallpaperIcon color="#cdd6f4" />
 				<span class="option-label">Apparance</span>
 			</a>
-			<a href="/settings/security" class="settings-option" title="security">
+			<a
+				href="/settings/security"
+				class="settings-option {page.url.pathname === '/settings/security' && 'active'}"
+				title="security"
+			>
 				<Fingerprint color="#cdd6f4" />
 				<span class="option-label">Security</span>
 			</a>
@@ -90,6 +99,14 @@
 						overflow: hidden;
 						transition: opacity 0.3s ease;
 					}
+				}
+				.active {
+					background-color: #1e1e2e;
+					color: #cdd6f4;
+				}
+				.disabled {
+					pointer-events: none;
+					opacity: 0.5;
 				}
 			}
 
