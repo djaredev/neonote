@@ -1,8 +1,8 @@
 <script lang="ts">
-	let { children, ...restProps } = $props();
+	let { children, disable = false, ...restProps } = $props();
 </script>
 
-<button class="button" {...restProps}>
+<button class={["button", { disable }]} {...restProps}>
 	{@render children()}
 </button>
 
@@ -27,5 +27,14 @@
 
 	.button:active {
 		transform: scale(0.98);
+	}
+
+	.disable {
+		opacity: 0.5;
+		cursor: not-allowed;
+
+		&:hover {
+			background-color: #cdd6f4;
+		}
 	}
 </style>
