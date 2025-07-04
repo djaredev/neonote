@@ -1,8 +1,8 @@
 <script lang="ts">
-	let { class: className = "", ...restProps } = $props();
+	let { class: className = "", value = $bindable(), ...restProps } = $props();
 </script>
 
-<input class={["field", className]} {...restProps} />
+<input class={["field", className]} bind:value {...restProps} />
 
 <style>
 	* {
