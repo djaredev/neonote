@@ -40,7 +40,7 @@
 	<label for="email" class="label">Email</label>
 	<Field id="email" type="email" bind:value={account.email} />
 	{#if account.username === userState.username && account.email === userState.email}
-		<Button type="submit" disable={true}>Save</Button>
+		<Button type="submit" disabled>Save</Button>
 	{:else}
 		<Button type="submit">Save</Button>
 	{/if}
