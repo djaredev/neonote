@@ -60,7 +60,6 @@
 			color: #cdd6f4;
 			padding: 16px;
 			border-radius: 10px;
-			white-space: nowrap;
 			border: 1px solid #313244;
 			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 
