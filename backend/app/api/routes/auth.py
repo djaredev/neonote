@@ -34,6 +34,11 @@ async def login(
     return user
 
 
+@router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
+async def logout(user: CurrentUser, response: Response):
+    response.delete_cookie("neonote_token")
+
+
 @router.get("/whoami", response_model=UserPublic)
 async def whoami(user: CurrentUser):
     return user
