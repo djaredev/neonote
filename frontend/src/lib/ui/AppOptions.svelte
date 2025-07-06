@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { CircleUserRoundIcon, SettingsIcon, LogOutIcon } from "@lucide/svelte";
 	import { userState } from "$lib/state/user.svelte";
+	import { logout } from "@neonote/sdk";
+	import { logout as logoutApp } from "$lib/utils/auth.svelte";
 
 	let isOpen = $state(false);
 	let dropdown: HTMLElement;
@@ -13,6 +15,13 @@
 		if (dropdown.contains(event.target as Node)) return;
 		event.stopPropagation();
 		isOpen = false;
+	}
+
+	async function onLogout() {
+		const res = await logout();
+		if (res.response.ok) {
+			logoutApp();
+		}
 	}
 </script>
 
@@ -35,7 +44,7 @@
 				<span>Settings</span>
 			</a>
 			<div class="dropdown-separator"></div>
-			<button class="dropdown-item">
+			<button class="dropdown-item" onclick={onLogout}>
 				<LogOutIcon class="dropdown-icon" />
 				<span>Logout</span>
 			</button>
