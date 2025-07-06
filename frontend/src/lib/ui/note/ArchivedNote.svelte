@@ -2,29 +2,31 @@
 	import NoteBase from "./NoteBase.svelte";
 	import { getNoteState } from "$lib/state/note.svelte";
 	import { ArchiveRestoreIcon, Trash2Icon } from "@lucide/svelte";
+	import handler from "$lib/utils/handler";
 	let { masonry, id } = $props();
 
 	const noteState = getNoteState();
-	const noteSnapshot = $state.snapshot(noteState.findById(id));
+	let noteSnapshot = $state.snapshot(noteState.findById(id));
 
-	function onClose() {
-		console.log("Close modal..");
+	const onClose = handler(async () => {
 		if (noteSnapshot) {
-			const res = noteState.update(noteSnapshot);
-			console.log(res);
+			const res = await noteState.update(noteSnapshot);
+			if (res && res.data) {
+				noteSnapshot = res.data;
+				masonry();
+			}
 		}
-		masonry();
-	}
+	});
 
-	function unArchive(event: MouseEvent) {
+	const unArchive = handler(async (event: MouseEvent) => {
 		event.stopPropagation();
-		noteState.unArchive(id);
-	}
+		await noteState.unArchive(id);
+	});
 
-	function trash(event: MouseEvent) {
+	const trash = handler(async (event: MouseEvent) => {
 		event.stopPropagation();
-		noteState.trash(id);
-	}
+		await noteState.trash(id);
+	});
 </script>
 
 <NoteBase {id} {onClose}>

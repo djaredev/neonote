@@ -3,6 +3,7 @@
 	import { getNoteState } from "$lib/state/note.svelte";
 	import { type NotePublic } from "@neonote/sdk";
 	import { FileUpIcon, FileXIcon } from "@lucide/svelte";
+	import handler from "$lib/utils/handler";
 	let { masonry, id } = $props();
 
 	const noteState = getNoteState();
@@ -12,15 +13,15 @@
 		masonry();
 	}
 
-	function restore(event: MouseEvent) {
+	const restore = handler(async (event: MouseEvent) => {
 		event.stopPropagation();
-		noteState.restore(id);
-	}
+		await noteState.restore(id);
+	});
 
-	function remove(event: MouseEvent) {
+	const remove = handler(async (event: MouseEvent) => {
 		event.stopPropagation();
-		noteState.delete(id);
-	}
+		await noteState.delete(id);
+	});
 </script>
 
 <NoteBase {id} {onClose}>
