@@ -1,6 +1,8 @@
+import { handleError } from "./middlewares";
+
 class Handler<T extends any[]> {
-	private callback: ((...arg: T) => void) | null;
-	private restoreCallback: (...arg: T) => void;
+	private callback: ((...arg: T) => void | Promise<void>) | null;
+	private restoreCallback: (...arg: T) => void | Promise<void>;
 	constructor(callback: (...arg: T) => void) {
 		this.callback = callback;
 		this.restoreCallback = callback;
@@ -11,8 +13,12 @@ class Handler<T extends any[]> {
 		this.callback = null;
 	};
 
-	run = (...arg: T) => {
-		this.callback?.(...arg);
+	exec = async (...arg: T) => {
+		try {
+			await this.callback?.(...arg);
+		} catch (error) {
+			handleError(error);
+		}
 	};
 
 	restore = () => {
@@ -24,6 +30,16 @@ class Handler<T extends any[]> {
 	};
 }
 
-export default function handler<T extends any[]>(callback: (...arg: T) => void, ref?: object) {
-	return new Handler(callback.bind(ref));
+export default function handler<T extends any[]>(
+	callback: (...arg: T) => void | Promise<void>,
+	ref?: object
+) {
+	const instance = new Handler(callback.bind(ref));
+	const callable = async (...arg: T) => {
+		await instance.exec(...arg);
+	};
+
+	Object.assign(callable, instance);
+
+	return callable as typeof callable & Handler<T>;
 }
