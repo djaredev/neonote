@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { CircleUserRoundIcon, SettingsIcon, LogOutIcon } from "@lucide/svelte";
+	import { userState } from "$lib/state/user.svelte";
 
 	let isOpen = $state(false);
 	let dropdown: HTMLElement;
@@ -23,8 +24,8 @@
 	</button>
 	<div class={["dropdown-menu", isOpen && "open"]}>
 		<div class="dropdown-header">
-			<div class="user-name">Admin</div>
-			<div class="user-email">admin@example.com</div>
+			<div class="user-name">{userState.username}</div>
+			<div class="user-email">{userState.email}</div>
 		</div>
 		<div class="dropdown-content">
 			<!-- <button class="dropdown-item"> -->
