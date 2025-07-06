@@ -9,11 +9,8 @@
 </script>
 
 <svelte:window onresize={modalState.onresize} />
-<svelte:document
-	onclick={(v) => modalState.onClose.run(v, onClose)}
-	onresize={modalState.onresize}
-/>
+<svelte:document onclick={(v) => modalState.onClose(v, onClose)} onresize={modalState.onresize} />
 
-<div class={className} bind:this={modalState.modal} onclick={modalState.onOpen.run}>
+<div class={className} bind:this={modalState.modal} onclick={modalState.onOpen}>
 	{@render children()}
 </div>
