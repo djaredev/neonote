@@ -4,34 +4,30 @@
 	import { updateUserMe, type UserUpdate } from "@neonote/sdk";
 	import { userState } from "$lib/state/user.svelte";
 	import { notify } from "$lib/state/notify.svelte";
+	import handler from "$lib/utils/handler";
 
 	const account: UserUpdate = $state({
 		username: userState.username,
 		email: userState.email
 	});
 
-	const onsubmit = async () => {
-		try {
-			const res = await updateUserMe({
-				body: {
-					username: account.username !== userState.username ? account.username : undefined,
-					email: account.email !== userState.email ? account.email : undefined
-				}
-			});
-
-			if (res.data) {
-				if (res.data.username !== userState.username) {
-					notify.success("Updated username");
-				}
-				if (res.data.email !== userState.email) {
-					notify.success("Updated email");
-				}
-				userState.set(res.data);
+	const onsubmit = handler(async () => {
+		const res = await updateUserMe({
+			body: {
+				username: account.username !== userState.username ? account.username : undefined,
+				email: account.email !== userState.email ? account.email : undefined
 			}
-		} catch {
-			notify.error("Failed to update account");
+		});
+		if (res.data) {
+			if (res.data.username !== userState.username) {
+				notify.success("Updated username");
+			}
+			if (res.data.email !== userState.email) {
+				notify.success("Updated email");
+			}
+			userState.set(res.data);
 		}
-	};
+	});
 </script>
 
 <form {onsubmit} class="profile">

@@ -3,6 +3,7 @@
 	import Field from "$lib/components/Field.svelte";
 	import { updatePasswordMe, type UpdatePassword } from "@neonote/sdk";
 	import { notify } from "$lib/state/notify.svelte";
+	import handler from "$lib/utils/handler";
 
 	const passwords: UpdatePassword = $state({
 		current_password: "",
@@ -11,7 +12,7 @@
 
 	let confirmPassword = $state("");
 
-	const onsubmit = async () => {
+	const onsubmit = handler(async () => {
 		if (passwords.new_password !== confirmPassword) {
 			notify.error("New password and confirm new password do not match");
 			return;
@@ -23,7 +24,7 @@
 		if (res.response.status === 204) {
 			notify.success("Password updated");
 		}
-	};
+	});
 </script>
 
 <form {onsubmit} class="security">
