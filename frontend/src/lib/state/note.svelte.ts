@@ -1,4 +1,5 @@
 import { getContext, setContext } from "svelte";
+import { NotificationLayout, notify } from "./notify.svelte";
 import {
 	archiveNote,
 	createNote,
@@ -10,6 +11,20 @@ import {
 	type NoteCreate,
 	type NotePublic
 } from "@neonote/sdk";
+
+const success = (ms: string) => {
+	notify.success({
+		title: ms,
+		layoutType: NotificationLayout.Minimal
+	});
+};
+
+const error = (ms: string) => {
+	notify.error({
+		title: ms,
+		layoutType: NotificationLayout.Minimal
+	});
+};
 
 class NoteState {
 	notes: NotePublic[] = $state([]);
@@ -25,14 +40,19 @@ class NoteState {
 		if (note.title === "" || note.content === "") return;
 		const res = await createNote({ body: note });
 		if (res.data) {
-			console.log("Note created");
 			this.notes.unshift(res.data);
 			console.log(this.notes.length);
+			success("Note created");
 		}
 	};
 
 	findById = (id: string): NotePublic | undefined => {
-		return this.notes.find((n) => n.id === id);
+		const note = this.notes.find((n) => n.id === id);
+		if (note) {
+			return note;
+		}
+		error("Note not found");
+		return undefined;
 	};
 
 	getAll = () => {
@@ -51,18 +71,16 @@ class NoteState {
 					id: note.id
 				}
 			});
+			success("Note updated");
 			return res;
 		}
 	};
 
 	delete = async (id: string) => {
-		try {
-			await deleteNote({ path: { id: id } });
+		const res = await deleteNote({ path: { id: id } });
+		if (res.data) {
 			this.notes = this.notes.filter((n) => n.id !== id);
-			console.log("Note deleted");
-		} catch (error) {
-			console.log("Error deleting note");
-			console.log(error);
+			success("Note deleted");
 		}
 	};
 
@@ -74,6 +92,7 @@ class NoteState {
 		});
 		if (res.response.status === 204) {
 			this.notes = this.notes.filter((n) => n.id !== id);
+			success("Note archived");
 		}
 	};
 
@@ -85,6 +104,7 @@ class NoteState {
 		});
 		if (res.response.status === 204) {
 			this.notes = this.notes.filter((n) => n.id !== id);
+			success("Note unarchived");
 		}
 	};
 
@@ -96,6 +116,7 @@ class NoteState {
 		});
 		if (res.response.status === 204) {
 			this.notes = this.notes.filter((n) => n.id !== id);
+			success("Note trashed");
 		}
 	};
 
@@ -107,6 +128,7 @@ class NoteState {
 		});
 		if (res.response.status === 204) {
 			this.notes = this.notes.filter((n) => n.id !== id);
+			success("Note restored");
 		}
 	};
 }
