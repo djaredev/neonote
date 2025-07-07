@@ -15,7 +15,7 @@
 <Sidebar bind:isOpen />
 <div class="main">
 	<Header bind:isOpen />
-	<div class="content">
+	<div class="content" id="content">
 		{@render children()}
 	</div>
 </div>

@@ -13,13 +13,15 @@
 	const noteState = getNoteState();
 	const MAX_LOAD = 100;
 	let count = $state(false);
+	let layout: HTMLElement;
+	let grid: HTMLElement;
 
 	const masonry = () => {
-		const container = document.getElementById("grid");
-		if (!container) return;
-		const items: HTMLCollection = container.children;
+		const content = document.getElementById("content");
+		if (!content) return;
+		const items: HTMLCollection = grid.children;
 
-		const width = 240;
+		const width = (items[0] as HTMLElement).offsetWidth;
 
 		let columns = 7;
 
@@ -27,8 +29,12 @@
 
 		const gap = 10;
 
-		while (columns * width + gap * columns >= container.offsetWidth) {
+		while (columns * width + gap * columns > content.offsetWidth) {
 			columns--;
+		}
+
+		if (columns > 1) {
+			grid.style.maxWidth = `${columns * width + gap * columns}px`;
 		}
 
 		for (let i = 0; i < items.length; i++) {
@@ -73,7 +79,7 @@
 				cursor: cursor
 			}
 		});
-		if (data.data && data.data.notes.length > 0) {
+		if (data.data && data.data.notes.length > 1) {
 			let newLength = noteState.notes.length + data.data.notes.length;
 			if (noteState.notes.length + data.data.notes.length > MAX_LOAD) {
 				noteState.notes.splice(0, newLength - MAX_LOAD);
@@ -142,11 +148,12 @@
 	{ontransitionstart}
 	{ontransitionend}
 	bind:clientWidth={null, onResizeWidth}
+	bind:this={layout}
 >
 	{#if count}
 		<LazyLoading loadData={loadPrevious.once} />
 	{/if}
-	<div class="grid" id="grid">
+	<div class="grid" id="grid" bind:this={grid}>
 		{#each noteState.notes as note (note.id)}
 			<NoteType {masonry} id={note.id} />
 		{/each}
@@ -155,21 +162,22 @@
 </div>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
 	.layout {
+		display: flex;
 		position: relative;
-		max-width: 1752px;
+		max-width: 1800px;
 		flex: 1;
+		justify-content: center;
 		overflow-y: auto;
+		padding: 10px;
 	}
 
 	.grid {
+		position: relative;
 		width: 100%;
-		overflow-y: auto;
-	}
-
-	@container content (width < 1700px) {
-		.layout {
-			max-width: 1502px;
-		}
+		flex: 1;
 	}
 </style>
