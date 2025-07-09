@@ -28,6 +28,10 @@
 </header>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
+
 	header {
 		display: flex;
 		width: 100%;
@@ -35,6 +39,8 @@
 		background: inherit;
 		justify-content: center;
 		align-items: center;
+		padding: 10px;
+		box-sizing: border-box;
 	}
 
 	.barsearch {
@@ -68,8 +74,18 @@
 	}
 
 	.header-action {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 50px;
+		height: 50px;
 		background: none;
 		border: none;
 		cursor: pointer;
+		border-radius: 10px;
+
+		&:hover {
+			background: #1e1e2e;
+		}
 	}
 </style>
