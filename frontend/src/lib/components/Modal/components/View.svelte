@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { getModalContext } from "./modal.svelte";
 
 	let { class: className = "", children } = $props();

@@ -98,4 +98,19 @@
 			}
 		}
 	}
+
+	@media (width <= 500px) {
+		.notify {
+			max-width: 100%;
+			top: 0;
+			right: 0;
+			padding: 10px;
+			flex-direction: row;
+			overflow-x: scroll;
+
+			.notification {
+				min-width: 100%;
+			}
+		}
+	}
 </style>

@@ -17,6 +17,7 @@
 	});
 
 	function onClose() {
+		if (!isFixed) return;
 		isFixed = isOpen = false;
 	}
 
@@ -30,7 +31,7 @@
 <svelte:window onresize={onResize} />
 
 {#if isFixed}
-	<div class="overlay-view" onclick={onClose}></div>
+	<div class="overlay-sidebar" onclick={onClose}></div>
 {/if}
 
 <nav class={["sidebar", isOpen && "sidebar-expanded"]} id="sidebar" bind:this={sidebar}>
@@ -41,7 +42,7 @@
 		</div>
 	</div>
 	<div class="sidebar-content">
-		<div class="sidebar-group">
+		<div class="sidebar-group" onclick={onClose}>
 			<div data-tooltip="Take a note">
 				<MakeNote class="item">
 					<div class="item-icon">
@@ -57,6 +58,7 @@
 				class="item {page.url.pathname === '/' && 'active'}"
 				data-tooltip="Notes"
 				data-sveltekit-preload-data="off"
+				onclick={onClose}
 			>
 				<div class="item-icon">
 					<NotebookPenIcon />
@@ -68,6 +70,7 @@
 				class="item {page.url.pathname === '/archive' && 'active'}"
 				data-tooltip="Archive"
 				data-sveltekit-preload-data="off"
+				onclick={onClose}
 			>
 				<div class="item-icon">
 					<ArchiveIcon />
@@ -79,6 +82,7 @@
 				class="item {page.url.pathname === '/trash' && 'active'}"
 				data-tooltip="Trash"
 				data-sveltekit-preload-data="off"
+				onclick={onClose}
 			>
 				<div class="item-icon">
 					<Trash2Icon />
@@ -109,7 +113,8 @@
 		background: #11111b;
 		color: #cdd6f4;
 		outline: 1px solid #313244;
-		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+		/* transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); */
+		transition: all 0.3s cubic-bezier(0.175, 0.885, 0.12, 1.07);
 
 		.sidebar-header {
 			width: 100%;
@@ -203,7 +208,7 @@
 		}
 	}
 
-	:global(.overlay-view) {
+	:global(.overlay-sidebar) {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -248,5 +253,11 @@
 		opacity: 1;
 		visibility: visible;
 		transform: translateY(-50%) translateX(0);
+	}
+
+	@media (width < 500px) {
+		[data-tooltip]::before {
+			display: none;
+		}
 	}
 </style>

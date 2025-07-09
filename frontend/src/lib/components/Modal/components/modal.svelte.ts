@@ -16,12 +16,13 @@ class ModalState {
 		this.customCenter = customCenter;
 	}
 
-	onOpen = handler(() => {
+	onOpen = handler((callback?) => {
 		if (!this.preview || !this.modal) return;
 		this.isOpen = this.overlay = true;
 		this.onOpen.clear();
 		tick().then(() => {
 			tick().then(() => {
+				callback?.();
 				if (!this.view || !this.preview || !this.modal) return;
 				this.view.style.transition = "none";
 

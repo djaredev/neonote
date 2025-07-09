@@ -1,5 +1,12 @@
 <script lang="ts">
-	let { class: className = "", children, customCenter = undefined, onClose = undefined } = $props();
+	let {
+		class: className = "",
+		children,
+		customCenter = undefined,
+		onClose = undefined,
+		onOpen = undefined,
+		...resProps
+	} = $props();
 	import { setModalContext, getModalContext } from "./modal.svelte";
 	// let modal: HTMLElement | null = null;
 
@@ -11,6 +18,11 @@
 <svelte:window onresize={modalState.onresize} />
 <svelte:document onclick={(v) => modalState.onClose(v, onClose)} onresize={modalState.onresize} />
 
-<div class={className} bind:this={modalState.modal} onclick={modalState.onOpen}>
+<div
+	class={className}
+	bind:this={modalState.modal}
+	onclick={() => modalState.onOpen(onOpen)}
+	{...resProps}
+>
 	{@render children()}
 </div>

@@ -2,7 +2,6 @@
 	import { fade } from "svelte/transition";
 	import { Modal } from "$lib/components/Modal";
 	import TextEditor from "$lib/components/Editor/TextEditor.svelte";
-	import { ArchiveIcon, Trash2Icon } from "@lucide/svelte";
 	import { getNoteState } from "$lib/state/note.svelte";
 
 	let { class: className, children } = $props();
@@ -33,54 +32,28 @@
 		note.title = "";
 		note.content = "";
 	}
+
+	let outside: HTMLElement;
+
+	function onOpen() {
+		document.body.appendChild(outside);
+	}
 </script>
 
-<Modal.Root class="make-note" {customCenter} {onClose}>
+<Modal.Root class="make-note" {onClose} {onOpen} {customCenter}>
 	<Modal.Preview class={className}>
 		{@render children()}
 	</Modal.Preview>
-	<Modal.Overlay class="overlay-view" {transition} />
-	<Modal.View class="make-note-view">
-		<TextEditor class="note-title-expand" bind:value={note.title} placeholder="Title" />
-		<TextEditor class="note-body-expand" bind:value={note.content} placeholder="Take a note..." />
-		<div class="note-footer">
-			<div class="note-options">
-				<button>
-					<ArchiveIcon color="#cdd6f4" />
-				</button>
-				<button>
-					<Trash2Icon color="#cdd6f4" />
-				</button>
-			</div>
-		</div>
-	</Modal.View>
+	<div bind:this={outside}>
+		<Modal.Overlay class="overlay-make-note" {transition} />
+		<Modal.View class="make-note-view">
+			<TextEditor class="note-title-expand" bind:value={note.title} placeholder="Title" />
+			<TextEditor class="note-body-expand" bind:value={note.content} placeholder="Take a note..." />
+		</Modal.View>
+	</div>
 </Modal.Root>
 
-<!-- <NoteTwo /> -->
-
 <style>
-	:global(.make-note) {
-		/* align-self: center; */
-	}
-
-	:global(.make-note-preview) {
-		color: #cdd6f4;
-		display: flex;
-		text-decoration: none;
-		width: 100%;
-		block-size: 50px;
-		align-items: center;
-		gap: 20px;
-		outline: 2px solid transparent;
-		border-radius: 10px;
-		padding: 10px;
-		box-sizing: border-box;
-		/* border: 1px solid white; */
-		/* overflow: hidden; */
-
-		z-index: 1;
-	}
-
 	:global(.make-note-view) {
 		position: fixed;
 		display: flex;
@@ -96,10 +69,13 @@
 		user-select: none;
 		font-size: 1rem;
 		box-sizing: border-box;
-		z-index: 1000;
+		z-index: 2000;
+	}
 
-		&:hover .note-options {
-			opacity: 1;
+	@media (width <= 600px) {
+		:global(.make-note-view) {
+			max-width: 100%;
+			max-height: 412px;
 		}
 	}
 
@@ -115,6 +91,7 @@
 	}
 
 	:global(.note-body-expand) {
+		min-height: 60px;
 		flex-grow: 1;
 		padding: 15px;
 		background: inherit;
@@ -131,7 +108,7 @@
 		box-sizing: border-box;
 	}
 
-	:global(.overlay-view) {
+	:global(.overlay-make-note) {
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -139,34 +116,7 @@
 		height: 100%;
 		background: rgba(0, 0, 0, 0.8);
 		backdrop-filter: blur(5px);
-		/* display: flex; */
-		/* align-items: center; */
-		/* justify-content: center; */
-		/* z-index: 1000; */
-		/* opacity: 1; */
-		/* visibility: hidden; */
+		z-index: 2000;
 		transition: all 5s ease;
-	}
-
-	:global(.note-options) {
-		display: flex;
-		justify-content: end;
-		width: 100%;
-		height: 100%;
-		gap: 5px;
-		font-size: 14px;
-		opacity: 0;
-		transition: opacity 0.3s ease-in-out;
-
-		& button {
-			border: none;
-			background: none;
-			cursor: pointer;
-
-			& img {
-				width: 24px;
-				height: 24px;
-			}
-		}
 	}
 </style>

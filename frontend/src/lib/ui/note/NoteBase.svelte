@@ -51,13 +51,9 @@
 		position: absolute;
 		transition: all 0.12s ease;
 		color: #cdd6f4;
-		/* top: 0px; */
-		/* left: 0px; */
-		/* overflow: hidden; */
 	}
 
 	:global(.preview) {
-		/* position: absolute; */
 		display: flex;
 		flex-direction: column;
 		width: 240px;
@@ -74,6 +70,21 @@
 
 		&:hover .note-options {
 			opacity: 1;
+		}
+	}
+
+	@media (width <= 500px) {
+		:global(.note) {
+			width: 100%;
+		}
+
+		:global(.preview) {
+			width: 100%;
+			max-height: 210px;
+
+			& .note-options {
+				visibility: hidden;
+			}
 		}
 	}
 
@@ -115,10 +126,22 @@
 		user-select: none;
 		font-size: 1rem;
 		box-sizing: border-box;
-		z-index: 1000;
+		z-index: 1010;
 
 		&:hover .note-options {
 			opacity: 1;
+		}
+	}
+
+	@media (width <= 600px) {
+		:global(.view) {
+			max-width: 100%;
+			max-height: 412px;
+
+			& .note-options {
+				visibility: visible;
+				opacity: 1;
+			}
 		}
 	}
 
@@ -166,7 +189,7 @@
 		/* display: flex; */
 		/* align-items: center; */
 		/* justify-content: center; */
-		z-index: 1000;
+		z-index: 1010;
 		/* opacity: 1; */
 		/* visibility: hidden; */
 		transition: all 5s ease;

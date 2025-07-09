@@ -29,7 +29,7 @@
 
 		const gap = 10;
 
-		while (columns * width + gap * columns > content.offsetWidth) {
+		while (columns * width + gap * columns > content.offsetWidth && columns > 1) {
 			columns--;
 		}
 
