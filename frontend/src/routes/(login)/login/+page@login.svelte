@@ -1,156 +1,144 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import Button from "$lib/components/Button.svelte";
+	import Field from "$lib/components/Field.svelte";
 	import { userState } from "$lib/state/user.svelte";
-	import { login, type BodyLoginLoginPost } from "@neonote/sdk";
+	import { CircleXIcon, XIcon } from "@lucide/svelte";
+	import { authclient, login, type BodyLoginLoginPost } from "@neonote/sdk";
+	import { slide } from "svelte/transition";
+	import neonote from "$lib/icons/neonote.svg";
 
 	const body: BodyLoginLoginPost = $state({
 		username: "",
 		password: ""
 	});
-	async function onsubmit(event: SubmitEvent) {
-		event.preventDefault();
-		const res = await login({
-			body: body
-		});
-		if (res.data) {
-			userState.set(res.data);
-			goto("/");
+
+	let error: unknown = $state("");
+	async function onsubmit() {
+		try {
+			const res = await login({
+				client: authclient,
+				body: body
+			});
+			if (res.data) {
+				userState.set(res.data);
+				goto("/");
+			} else if (res.error.detail) {
+				error = res.error.detail as unknown;
+			}
+		} catch {
+			error = "An error occurred, please try again";
 		}
 	}
 </script>
 
+<div class="header">
+	<img src={neonote} alt="Icono" width="50" height="50" />
+</div>
 <div class="container">
-	<button class="btn signup-btn">Sign Up</button>
-	<form {onsubmit} class="login-form">
-		<h2>Login to Neonote</h2>
-		<br />
-		<div class="form-group">
-			<input
-				type="text"
-				id="username"
-				name="username"
-				placeholder=" "
-				required
-				bind:value={body.username}
-			/>
-			<label for="username">Username</label>
+	<form class="login-form" {onsubmit}>
+		<div class="login-header">
+			<h2>Login to Neonote</h2>
+			{#if error}
+				<div class="login-error" transition:slide={{ duration: 200 }}>
+					<CircleXIcon />
+					{error}
+					<button type="button" class="login-error-close" onclick={() => (error = "")}>
+						<XIcon size={16} />
+					</button>
+				</div>
+			{/if}
 		</div>
-		<div class="form-group">
-			<input
-				type="password"
+		<div class="login-body">
+			<Field placeholder="Username" id="username" type="text" required bind:value={body.username} />
+			<Field
+				placeholder="Password"
 				id="password"
-				name="password"
-				placeholder=" "
+				type="password"
 				required
 				bind:value={body.password}
 			/>
-			<label for="password">Password</label>
+			<Button type="submit">Login</Button>
 		</div>
-		<button class="btn main-btn" type="submit">Login</button>
 	</form>
 </div>
 
 <style>
+	* {
+		box-sizing: border-box;
+	}
+
+	.header {
+		position: fixed;
+		padding: 10px;
+	}
+
 	.container {
-		font-family: Arial, sans-serif;
-		background-color: #11111b;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		/* height: 100vh; */
 		flex: 1;
-		position: relative;
-	}
-
-	.signup-btn {
-		position: absolute;
-		top: 20px;
-		right: 20px;
-		background-color: transparent;
-		border: 1px solid #cdd6f4;
 		color: #cdd6f4;
-		text-decoration: none;
-		transition:
-			background-color 0.3s ease,
-			color 0.3s ease;
-	}
 
-	.signup-btn:hover {
-		background-color: #cdd6f4;
-		color: #11111b;
-	}
+		.login-form {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+			width: 320px;
 
-	.login-form h2 {
-		text-align: center;
-		margin-bottom: 20px;
-		color: #cdd6f4;
-	}
+			@media (width <= 320px) {
+				& {
+					width: 100%;
+				}
+			}
+		}
 
-	.form-group {
-		position: relative;
-		margin-bottom: 25px;
-	}
+		.login-header {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
 
-	.form-group input {
-		width: 300px;
-		height: 48px;
-		padding: 10px;
-		border: 1px solid #313244;
-		border-radius: 10px;
-		font-size: 16px;
-		background-color: transparent;
-		color: #cdd6f4;
-		outline: none;
-		transition: border-color 0.3s ease;
-	}
+			.login-error {
+				display: flex;
+				gap: 10px;
+				width: 100%;
+				background: #f38ba8;
+				color: #11111b;
+				font-size: 14px;
+				font-weight: bold;
+				padding: 10px;
+				border-radius: 10px;
+				border: 1px solid #313244;
+				box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+				align-items: center;
 
-	.form-group input::placeholder {
-		color: transparent;
-	}
+				.login-error-close {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					background: transparent;
+					width: 30px;
+					height: 30px;
+					margin: 0;
+					padding: 0;
+					border: none;
+					border-radius: 100%;
+					cursor: pointer;
+					color: #11111b;
 
-	.form-group label {
-		position: absolute;
-		top: 50%;
-		left: 10px;
-		transform: translateY(-50%);
-		background-color: transparent;
-		padding: 0 5px;
-		color: #cdd6f4;
-		font-size: 16px;
-		transition: all 0.3s ease;
-		pointer-events: none;
-	}
+					&:hover {
+						background-color: #db7d97;
+					}
+				}
+			}
+		}
 
-	.form-group input:focus,
-	.form-group input:not(:placeholder-shown) {
-		border-color: #cdd6f4;
-		box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-	}
-
-	.form-group input:focus + label,
-	.form-group input:not(:placeholder-shown) + label {
-		top: -10px;
-		left: 10px;
-		font-size: 12px;
-		color: #cdd6f4;
-	}
-
-	.main-btn {
-		width: 100%;
-		background-color: #cdd6f4;
-		border: none;
-		color: #11111b;
-		cursor: pointer;
-		margin-top: 10px;
-	}
-
-	.main-btn:hover {
-		background-color: #bac2de;
-	}
-
-	.btn {
-		padding: 10px;
-		border-radius: 10px;
-		font-size: 16px;
+		.login-body {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			gap: 20px;
+		}
 	}
 </style>

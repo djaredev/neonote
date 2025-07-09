@@ -1,8 +1,14 @@
+html {
+	height: 100%;
+	width: 100%;
+}
+
 body {
 	display: flex;
-	height: 100vh;
+	height: 100%;
+	width: 100%;
 	margin: 0;
 	padding: 0;
 	background: #11111b;
-	gap: 10px;
+	box-sizing: border-box;
 }
