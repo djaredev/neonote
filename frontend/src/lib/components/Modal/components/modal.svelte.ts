@@ -57,6 +57,7 @@ class ModalState {
 		if (
 			!this.preview ||
 			!this.view ||
+			!this.modal ||
 			this.preview.contains(event.target as Node) ||
 			this.view.contains(event.target as Node)
 		)

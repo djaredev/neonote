@@ -13,7 +13,6 @@
 	const noteState = getNoteState();
 	const MAX_LOAD = 100;
 	let count = $state(false);
-	let layout: HTMLElement;
 	let grid: HTMLElement;
 
 	const masonry = () => {
@@ -51,12 +50,12 @@
 			let activeTransitions = 0;
 
 			ontransitionstart = (event: TransitionEvent) => {
-				if (!event.target.classList.contains("note")) return;
+				if (!(event.target as HTMLElement).classList.contains("note")) return;
 				activeTransitions++;
 			};
 
 			ontransitionend = (event: TransitionEvent) => {
-				if (!event.target.classList.contains("note")) return;
+				if (!(event.target as HTMLElement).classList.contains("note")) return;
 				activeTransitions--;
 				if (activeTransitions === 0) {
 					ontransitionstart = null;
@@ -148,7 +147,6 @@
 	{ontransitionstart}
 	{ontransitionend}
 	bind:clientWidth={null, onResizeWidth}
-	bind:this={layout}
 >
 	{#if count}
 		<LazyLoading loadData={loadPrevious.once} />
