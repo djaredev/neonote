@@ -30,5 +30,19 @@ class Settings(BaseSettings):
     def LOG_PATH(self) -> str:
         return f"{self.DATA_DIR}/logs/app.log"
 
+    @computed_field
+    @property
+    def FRONTEND_INDEX_PATH(self) -> str:
+        return f"{self.FRONTEND_DIR}/index.html"
+
+    @computed_field
+    @property
+    def FRONTEND_FAVICON_PATH(self) -> str:
+        return f"{self.FRONTEND_DIR}/favicon.svg"
+
+    @computed_field
+    @property
+    def FRONTEND_STATIC_PATH(self) -> str:
+        return f"{self.FRONTEND_DIR}/static"
 
 settings = Settings()  # type: ignore
