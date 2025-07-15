@@ -45,4 +45,14 @@ class Settings(BaseSettings):
     def FRONTEND_STATIC_PATH(self) -> str:
         return f"{self.FRONTEND_DIR}/static"
 
+    ENVIRONMENT: str = "dev"
+
+    @computed_field
+    @property
+    def OPENAPI_URL(self) -> str | None:
+        if self.ENVIRONMENT != "dev":
+            return None
+        return f"{self.API}/openapi.json"
+
+
 settings = Settings()  # type: ignore

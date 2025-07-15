@@ -8,7 +8,9 @@ from app.frontend import frontend
 create_db_and_tables()
 
 app = FastAPI(
-    openapi_url=f"{settings.API}/openapi.json",
+    openapi_url=settings.OPENAPI_URL,
+    docs_url=None,
+    redoc_url=None,
 )
 
 app.add_middleware(
