@@ -1,5 +1,6 @@
 import logging
 import logging.config
+from app.core.config import settings
 
 
 class CustomFormatter(logging.Formatter):
@@ -83,7 +84,7 @@ LOGGING_CONFIG = {
             "class": "logging.FileHandler",
             "level": "DEBUG",
             "formatter": "standard",
-            "filename": "app.log",
+            "filename": f"{settings.LOG_PATH}",
             "mode": "a",
             "encoding": "utf-8",
         },
