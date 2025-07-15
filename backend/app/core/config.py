@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    API: str = "/api"
     DB_DIALECT: str = "sqlite"
     DB_DRIVER: str = ""
     SECRET_KEY: str
