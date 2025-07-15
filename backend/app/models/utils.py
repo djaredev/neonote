@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class Direction(Enum):
+class Direction(str, Enum):
     NEXT = "next"
     PREV = "prev"
 

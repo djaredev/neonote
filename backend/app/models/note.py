@@ -31,9 +31,6 @@ class NotePublic(NoteBase):
     id: UUID
     created_at: datetime
     updated_at: datetime
-    deleted_at: datetime | None
-    is_archived: bool
-    is_trashed: bool
 
 
 class NotesPublic(SQLModel):
