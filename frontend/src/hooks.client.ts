@@ -1,11 +1,8 @@
 import type { ClientInit, HandleClientError } from "@sveltejs/kit";
-import { client } from "@neonote/sdk";
-import { ensureAuthenticated } from "$lib/utils/auth.svelte";
-import { handleHttpError } from "$lib/utils/middlewares";
+import { setUpSDKClient } from "$lib/utils/sdk-client";
 
 export const init: ClientInit = async () => {
-	client.interceptors.response.use(ensureAuthenticated);
-	client.interceptors.error.use(handleHttpError);
+	setUpSDKClient();
 };
 
 export const handleError: HandleClientError = ({ error, event, status, message }) => {
