@@ -11,7 +11,7 @@ router = APIRouter()
 @router.get("/docs", include_in_schema=False)
 async def custom_swagger_ui_html():
     return get_swagger_ui_html(
-        title="Neonote",
+        title=settings.API_NAME,
         openapi_url=settings.OPENAPI_URL,  # type: ignore
         oauth2_redirect_url="api/docs/oauth2-redirect",
         swagger_favicon_url="/favicon.svg",

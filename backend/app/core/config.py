@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     DATA_DIR: DirectoryPath
     FRONTEND_DIR: DirectoryPath
     ALLOWED_ORIGINS: str = "http://localhost:5173"
+    API_NAME: str = "Neonote API"
 
     @field_validator("DATA_DIR", "FRONTEND_DIR", mode="after")
     @classmethod

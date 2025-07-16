@@ -8,6 +8,7 @@ from app.frontend import frontend
 create_db_and_tables()
 
 app = FastAPI(
+    title=settings.API_NAME,
     openapi_url=settings.OPENAPI_URL,
     docs_url=None,
     redoc_url=None,
