@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     SUPERUSER_PASSWORD: str
     DATA_DIR: DirectoryPath
     FRONTEND_DIR: DirectoryPath
+    ALLOWED_ORIGINS: str = "http://localhost:5173"
 
     @field_validator("DATA_DIR", "FRONTEND_DIR", mode="after")
     @classmethod
