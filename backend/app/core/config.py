@@ -3,7 +3,17 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    ENVIRONMENT: str = "dev"
+
+    @computed_field
+    @property
+    def OPENAPI_URL(self) -> str | None:
+        if self.ENVIRONMENT != "dev":
+            return None
+        return f"{self.API}/openapi.json"
+
     API: str = "/api"
+    API_NAME: str = "Neonote API"
     DB_DIALECT: str = "sqlite"
     DB_DRIVER: str = ""
     SECRET_KEY: str
@@ -12,15 +22,9 @@ class Settings(BaseSettings):
     SUPERUSER_USERNAME: str
     SUPERUSER_EMAIL: str
     SUPERUSER_PASSWORD: str
-    DATA_DIR: DirectoryPath
-    FRONTEND_DIR: DirectoryPath
     ALLOWED_ORIGINS: str = "http://localhost:5173"
-    API_NAME: str = "Neonote API"
 
-    @field_validator("DATA_DIR", "FRONTEND_DIR", mode="after")
-    @classmethod
-    def resolve_path(cls, value: DirectoryPath) -> DirectoryPath:
-        return value.resolve()
+    DATA_DIR: DirectoryPath
 
     @computed_field
     @property
@@ -31,6 +35,8 @@ class Settings(BaseSettings):
     @property
     def LOG_PATH(self) -> str:
         return f"{self.DATA_DIR}/logs/app.log"
+
+    FRONTEND_DIR: DirectoryPath
 
     @computed_field
     @property
@@ -47,14 +53,10 @@ class Settings(BaseSettings):
     def FRONTEND_STATIC_PATH(self) -> str:
         return f"{self.FRONTEND_DIR}/static"
 
-    ENVIRONMENT: str = "dev"
-
-    @computed_field
-    @property
-    def OPENAPI_URL(self) -> str | None:
-        if self.ENVIRONMENT != "dev":
-            return None
-        return f"{self.API}/openapi.json"
+    @field_validator("DATA_DIR", "FRONTEND_DIR", mode="after")
+    @classmethod
+    def _resolve_path(cls, value: DirectoryPath) -> DirectoryPath:
+        return value.resolve()
 
 
 settings = Settings()  # type: ignore
