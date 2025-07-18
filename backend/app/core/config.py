@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     ENVIRONMENT: str = "dev"
+    LOG_LEVEL: str = "INFO"
 
     @computed_field
     @property

@@ -82,7 +82,7 @@ LOGGING_CONFIG = {
     "handlers": {
         "file": {
             "class": "logging.FileHandler",
-            "level": "DEBUG",
+            "level": settings.LOG_LEVEL,
             "formatter": "standard",
             "filename": f"{settings.LOG_PATH}",
             "mode": "a",
@@ -90,7 +90,7 @@ LOGGING_CONFIG = {
         },
         "console": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG",
+            "level": settings.LOG_LEVEL,
             "formatter": "standard_color",
             "stream": "ext://sys.stdout",
         },
@@ -98,7 +98,7 @@ LOGGING_CONFIG = {
     "loggers": {
         "": {
             "handlers": ["console", "file"],
-            "level": "DEBUG",
+            "level": settings.LOG_LEVEL,
             "propagate": False,
         }
     },
