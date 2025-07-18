@@ -41,7 +41,6 @@ class NoteState {
 		const res = await createNote({ body: note });
 		if (res.data) {
 			this.notes.unshift(res.data);
-			console.log(this.notes.length);
 			success("Note created");
 		}
 	};

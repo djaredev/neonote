@@ -43,7 +43,6 @@ export const handleHttpError = (error: unknown) => {
 };
 
 export const handleError = (error: unknown) => {
-	console.log(error);
 	if (error instanceof TypeError) {
 		notify.error("Could not connect to server. Check your internet connection.");
 		return;

@@ -9,7 +9,6 @@
 	const noteState = getNoteState();
 
 	function onClose() {
-		console.log("Close modal..");
 		masonry();
 	}
 

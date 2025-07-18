@@ -9,10 +9,8 @@
 	let sidebar: HTMLElement;
 	let isFixed = $derived.by(() => {
 		if (isOpen && window.innerWidth < 745) {
-			console.log("fixed");
 			return true;
 		}
-		console.log("not fixed");
 		return false;
 	});
 

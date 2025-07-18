@@ -134,7 +134,6 @@
 
 	$effect(() => {
 		noteState.notes.length;
-		console.log("Masonry effect");
 		masonry();
 	});
 </script>

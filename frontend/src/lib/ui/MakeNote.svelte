@@ -27,8 +27,6 @@
 
 	function onClose() {
 		noteState.create($state.snapshot(note));
-		console.log("Close modal..");
-		console.log(noteState.notes.length);
 		note.title = "";
 		note.content = "";
 	}

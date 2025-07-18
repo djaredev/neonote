@@ -21,11 +21,11 @@
 	function setInnerText(text: string) {
 		innerText = text;
 		value = extractPlainText(element.innerHTML);
-		console.log("\n----");
-		console.log(JSON.stringify(text));
-		console.log(JSON.stringify(text.replace(/\n\n/g, "\n")));
-		console.log(JSON.stringify(element.innerHTML));
-		console.log(JSON.stringify(extractPlainText(element.innerHTML)));
+		// console.log("\n----");
+		// console.log(JSON.stringify(text));
+		// console.log(JSON.stringify(text.replace(/\n\n/g, "\n")));
+		// console.log(JSON.stringify(element.innerHTML));
+		// console.log(JSON.stringify(extractPlainText(element.innerHTML)));
 	}
 
 	function extractPlainText(html: string) {
