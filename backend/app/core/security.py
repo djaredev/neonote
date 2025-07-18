@@ -17,10 +17,7 @@ def create_access_token(subject: str | Any) -> str:
 
 
 def decode_token(token: str) -> Any:
-    print("Decode...")
-    print(settings)
     payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-    print(payload)
     return payload
 
 

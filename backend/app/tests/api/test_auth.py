@@ -8,7 +8,6 @@ def test_login(client: TestClient, superuser: User):
     response = client.post(
         "api/login", data={"username": "admin", "password": "password"}
     )
-    print(response.cookies)
     assert response.status_code == status.HTTP_200_OK
     UserPublic.model_validate(response.json())
     assert "neonote_token" in response.cookies

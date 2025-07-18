@@ -22,22 +22,16 @@ SessionDep = Annotated[Session, Depends(_get_db)]
 def _get_current_user(
     token: Annotated[str, Depends(cookie_scheme)], session: SessionDep
 ):
-    print("Current user: ")
-    print("Token: ")
-    print(token)
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        print("Try decode...")
         payload = decode_token(token)
-        print(payload)
     except InvalidTokenError:
         raise credentials_exception
     user_id: str = payload.get("sub")
-    print(user_id)
     if not user_id:
         raise credentials_exception
     user = session.exec(select(User).where(User.id == uuid.UUID(user_id))).first()
