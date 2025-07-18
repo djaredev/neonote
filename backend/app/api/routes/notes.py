@@ -76,4 +76,3 @@ async def trash_note(service: NoteService, id: UUID):
 @router.post("/{id}/restore", status_code=status.HTTP_204_NO_CONTENT)
 async def restore_note(service: NoteService, id: UUID):
     service.restore_note(id)
-        )
