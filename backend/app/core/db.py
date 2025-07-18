@@ -12,18 +12,20 @@ def create_db_and_tables():
 
 
 def create_superuser(session: Session):
-    session.add(
-        User(
-            username=settings.SUPERUSER_USERNAME,
-            email=settings.SUPERUSER_EMAIL,
-            hashed_password=get_password_hash(settings.SUPERUSER_PASSWORD),
-            is_superuser=True,
-        )
+    superuser = User(
+        username=settings.SUPERUSER_USERNAME,
+        email=settings.SUPERUSER_EMAIL,
+        hashed_password=get_password_hash(settings.SUPERUSER_PASSWORD),
+        is_superuser=True,
     )
+    session.add(superuser)
     session.commit()
+    session.refresh(superuser)
+    return superuser
 
 
 def init_db():
+    logger.info("Initializing database...")
     create_db_and_tables()
     with Session(engine) as session:
         user = session.exec(select(User).limit(1)).first()
@@ -31,3 +33,6 @@ def init_db():
             logger.info("Creating superuser...")
             create_superuser(session)
             logger.info("Superuser created.")
+        else:
+            logger.info("Superuser already exists.")
+    logger.info("Database initialized.")
