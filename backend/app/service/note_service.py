@@ -21,13 +21,15 @@ class _NoteService:
         self.user = user
         self.note_repo = note_repo
 
-    def create_note(self, note: NoteCreate):
+    def create_note(self, note: NoteCreate, archive: bool = False, trash: bool = False):
         db_note = Note.model_validate(
             note,
             update={
                 "user_id": self.user.id,
                 "created_at": datetime.now(),
                 "updated_at": datetime.now(),
+                "is_archived": archive,
+                "is_trashed": trash,
             },
         )
         return self.note_repo.create(db_note)
