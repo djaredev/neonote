@@ -1,6 +1,6 @@
 import logging
 import logging.config
-from neonote.core.config import settings
+from pathlib import Path
 
 
 class CustomFormatter(logging.Formatter):
@@ -63,47 +63,48 @@ class CustomFormatter(logging.Formatter):
         return timestamp
 
 
-LOGGING_CONFIG = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "standard": {
-            "()": CustomFormatter,
-            "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M",
-            "use_colors": False,
+def setup_logger(log_level: str, log_path: str | Path) -> None:
+    LOGGING_CONFIG = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "standard": {
+                "()": CustomFormatter,
+                "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M",
+                "use_colors": False,
+            },
+            "standard_color": {
+                "()": CustomFormatter,
+                "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
+                "datefmt": "%Y-%m-%d %H:%M",
+            },
         },
-        "standard_color": {
-            "()": CustomFormatter,
-            "format": "%(asctime)s %(levelname)s %(name)s: %(message)s",
-            "datefmt": "%Y-%m-%d %H:%M",
+        "handlers": {
+            "file": {
+                "class": "logging.FileHandler",
+                "level": log_level,
+                "formatter": "standard",
+                "filename": log_path,
+                "mode": "a",
+                "encoding": "utf-8",
+            },
+            "console": {
+                "class": "logging.StreamHandler",
+                "level": log_level,
+                "formatter": "standard_color",
+                "stream": "ext://sys.stdout",
+            },
         },
-    },
-    "handlers": {
-        "file": {
-            "class": "logging.FileHandler",
-            "level": settings.LOG_LEVEL,
-            "formatter": "standard",
-            "filename": f"{settings.LOG_PATH}",
-            "mode": "a",
-            "encoding": "utf-8",
+        "loggers": {
+            "": {
+                "handlers": ["console", "file"],
+                "level": log_level,
+                "propagate": False,
+            }
         },
-        "console": {
-            "class": "logging.StreamHandler",
-            "level": settings.LOG_LEVEL,
-            "formatter": "standard_color",
-            "stream": "ext://sys.stdout",
-        },
-    },
-    "loggers": {
-        "": {
-            "handlers": ["console", "file"],
-            "level": settings.LOG_LEVEL,
-            "propagate": False,
-        }
-    },
-}
+    }
+    logging.config.dictConfig(LOGGING_CONFIG)
 
-logging.config.dictConfig(LOGGING_CONFIG)
 
-logger = logging.getLogger("app")
+# logging.config.dictConfig(LOGGING_CONFIG)
