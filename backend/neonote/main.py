@@ -1,13 +1,10 @@
 from fastapi import FastAPI
 from neonote.api.router import api_router
-from neonote.core.db import create_db_and_tables
 from neonote.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 from neonote.core.logger.logger import logger
 from neonote.frontend import frontend
 from neonote.scripts.prestart import prestart
-
-create_db_and_tables()
 
 app = FastAPI(
     title=settings.API_NAME,
@@ -35,4 +32,4 @@ def run_server():
     prestart()
 
     logger.info("Starting server...")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=1717)
