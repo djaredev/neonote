@@ -13,11 +13,15 @@ def create_access_token(subject: str | Any) -> str:
         "exp": datetime.now(tz=timezone.utc)
         + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
     }
-    return jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    return jwt.encode(
+        encode, settings.SECRET_KEY.get_secret_value(), algorithm=settings.ALGORITHM
+    )
 
 
 def decode_token(token: str) -> Any:
-    payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+    payload = jwt.decode(
+        token, settings.SECRET_KEY.get_secret_value(), algorithms=[settings.ALGORITHM]
+    )
     return payload
 
 

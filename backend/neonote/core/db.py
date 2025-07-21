@@ -15,7 +15,9 @@ def create_superuser(session: Session):
     superuser = User(
         username=settings.SUPERUSER_USERNAME,
         email=settings.SUPERUSER_EMAIL,
-        hashed_password=get_password_hash(settings.SUPERUSER_PASSWORD),
+        hashed_password=get_password_hash(
+            settings.SUPERUSER_PASSWORD.get_secret_value()
+        ),
         is_superuser=True,
     )
     session.add(superuser)
