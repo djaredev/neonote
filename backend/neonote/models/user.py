@@ -1,10 +1,11 @@
+from pydantic import EmailStr
 from sqlmodel import SQLModel, Field
 from uuid import uuid4, UUID
 
 
 class UserBase(SQLModel):
     username: str = Field(index=True, unique=True, min_length=2, max_length=255)
-    email: str = Field(unique=True, min_length=2, max_length=255)
+    email: EmailStr = Field(unique=True, max_length=255)
 
 
 class UserCreate(UserBase):
@@ -13,7 +14,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(SQLModel):
     username: str | None = Field(default=None, min_length=2, max_length=255)
-    email: str | None = Field(default=None, min_length=2, max_length=255)
+    email: EmailStr | None = Field(default=None, max_length=255)
 
 
 class UserDelete(SQLModel):

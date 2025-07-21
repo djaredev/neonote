@@ -5,6 +5,8 @@ from pydantic import (
     AfterValidator,
     BeforeValidator,
     DirectoryPath,
+    EmailStr,
+    Field,
     FilePath,
     SecretStr,
     computed_field,
@@ -62,9 +64,9 @@ class Settings(DataDir):
     DB_DRIVER: str = ""
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
-    SUPERUSER_USERNAME: str
-    SUPERUSER_EMAIL: str
-    SUPERUSER_PASSWORD: SecretStr
+    SUPERUSER_USERNAME: str = Field(min_length=2, max_length=255)
+    SUPERUSER_EMAIL: EmailStr = Field(max_length=255)
+    SUPERUSER_PASSWORD: SecretStr = Field(min_length=8, max_length=40)
     ALLOWED_ORIGINS: str = "http://localhost:5173"
 
     @computed_field
@@ -125,8 +127,8 @@ logger.info("Loading configuration...")
 # settings = Settings()  # type: ignore
 
 try:
-    logger.info("Configuration loaded.")
     settings = Settings()  # type: ignore
+    logger.info("Configuration loaded.")
 except Exception:
     logger.exception("Error loading configuration.")
     raise
