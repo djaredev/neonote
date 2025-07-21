@@ -27,3 +27,12 @@ if settings.ENVIRONMENT == "dev":
 
 app.include_router(api_router, prefix=settings.API)
 app.mount("/", frontend)
+
+
+def run_server():
+    import uvicorn
+
+    prestart()
+
+    logger.info("Starting server...")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
