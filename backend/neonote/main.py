@@ -32,4 +32,4 @@ def run_server():
     prestart()
 
     logger.info("Starting server...")
-    uvicorn.run(app, host="0.0.0.0", port=1717)
+    uvicorn.run(app, host="0.0.0.0", port=settings.PORT)
