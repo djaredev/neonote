@@ -5,6 +5,10 @@
   <img src="assets/neonote-screenshots.png">
 </div>
 
+##
+> [!WARNING]
+> This project is in early development and may contain bugs or change without prior notice.
+
 ## ✨ Features
 ### 📝 Note Management
 - [X] ✍️ **Basic Editor**: Simple implementation for quick note-taking
